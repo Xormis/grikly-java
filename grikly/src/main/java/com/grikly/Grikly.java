@@ -4,6 +4,7 @@ import com.grikly.model.Card;
 import com.grikly.model.LoginModel;
 import com.grikly.model.NewUser;
 import com.grikly.model.User;
+import com.grikly.request.HttpDeleteRequest;
 import com.grikly.request.HttpGetRequest;
 import com.grikly.request.HttpPostRequest;
 import com.grikly.request.HttpPutRequest;
@@ -160,5 +161,26 @@ public class Grikly{
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response, URL.CARD);
 		client.execute();
 	}//end updateCard method 
+	
+	
+	
+	/**
+	 * @author Mario Dennis
+	 * @param cardId
+	 * @param response
+	 */
+	public void deleteCard (int cardId, ResponseListener<Card> response)
+	{
+		if (cardId <= 0)
+			throw new IllegalArgumentException("Card Id must be greater than 0");
+		
+		if (response == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		IHttpRequest<Card, Card> request = new HttpDeleteRequest<Card, Card>(getApiKey(), null, new Integer(cardId), Card.class);
+		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response, URL.CARD);
+		client.execute();
+	}//end deleteCard method 
+	
 	
 }//end  Grikly class
