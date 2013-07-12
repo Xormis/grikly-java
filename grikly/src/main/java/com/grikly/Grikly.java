@@ -6,7 +6,9 @@ import com.grikly.model.NewUser;
 import com.grikly.model.User;
 import com.grikly.request.HttpGetRequest;
 import com.grikly.request.HttpPostRequest;
+import com.grikly.request.HttpPutRequest;
 import com.grikly.request.IHttpRequest;
+
 
 
 public class Grikly{
@@ -108,7 +110,6 @@ public class Grikly{
 	}//end emailExist method
 	
 	
-	
 	/**
 	 * @author Mario Dennis
 	 * @param cardId
@@ -143,5 +144,21 @@ public class Grikly{
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response, URL.CARD_BASE);
 		client.execute();
 	}//end createCard method
+	
+	
+	/**
+	 * @author Mario Dennis
+	 * @param card
+	 * @param response
+	 */
+	public void updateCard (Card card,ResponseListener<Card> response)
+	{
+		if (card == null || response == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		IHttpRequest<Card, Card> request = new HttpPutRequest<Card, Card>(getApiKey(), card,new Integer(card.getCardId()), Card.class);
+		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response, URL.CARD);
+		client.execute();
+	}//end updateCard method 
 	
 }//end  Grikly class
