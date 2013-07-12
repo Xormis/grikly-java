@@ -14,7 +14,7 @@ public class GriklyClient <E,T>{
 	 * @param response
 	 * @param url
 	 */
-	public GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response,URL url)
+	protected GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response,URL url)
 	{
 		this.request = request;
 		this.response = response;

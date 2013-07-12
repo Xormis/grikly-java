@@ -9,7 +9,7 @@ public class GriklyThread<E,T> implements Runnable{
 	private final IHttpRequest<E,T> request;
 	private final URL url;
 	
-	public GriklyThread (IHttpRequest<E,T> listener,ResponseListener<T> response,URL url)
+	protected GriklyThread (IHttpRequest<E,T> listener,ResponseListener<T> response,URL url)
 	{
 		this.response = response;
 		this.request = listener;
@@ -19,9 +19,10 @@ public class GriklyThread<E,T> implements Runnable{
 	
 	public void run() 
 	{
+		T result;
 		synchronized (request) 
 		{
-			T result = (T) request.execute (url);
+			result = (T) request.execute (url);	
 			response.response(result);
 		}
 		
