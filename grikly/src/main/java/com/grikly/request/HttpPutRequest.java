@@ -9,9 +9,22 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * HttpPutRequest is used to execute a HTTP
+ * Request using the HTTP PUT method. This class 
+ * is thread-safe and cannot be sub-classed.
+ * @author Mario Dennis
+ *
+ * @param <E>
+ * @param <T>
+ */
 public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 
-
+	/**
+	 * HttpPutRequest Default Constructor.
+	 * @author Mario Dennis
+	 * @param HttpBuilder<E, T>
+	 */
 	protected HttpPutRequest (HttpBuilder<E, T> builder)
 	{
 		super(builder);
@@ -19,8 +32,9 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 	
 	
 	/**
-	 * Execute HTTP POST request to Grikly Server.
+	 * Execute HTTP PUT request to Grikly Server.
 	 * @author Mario Dennis
+	 * @return T
 	 */
 	public T execute()
 	{
