@@ -10,9 +10,9 @@ public class JerseyUtil {
 	
 	/**
 	 * Gets instance of Jersey Client.
-	 * [Note] Singleton instance returned.
+	 * [Note] Returns Singleton.
 	 * @author Mario Dennis
-	 * @return
+	 * @return Client
 	 */
 	public static Client getClient ()
 	{
