@@ -60,7 +60,7 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 							   .get(ClientResponse.class);
 		
 		//adds authInfo when supplied
-		if (getAuthInfo() != null)
+		else if (getAuthInfo() != null)
 			response = resource.header("ApiKey",getApiKey())
 			   				   .header("Authorization","Basic " + getAuthInfo())
 			   				   .accept(MediaType.APPLICATION_JSON)
@@ -68,7 +68,6 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 		
 		else
 			response = resource.header("ApiKey",getApiKey()).accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-		
 		if (response.getStatus() == 200)
 		{
 			
