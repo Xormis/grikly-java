@@ -2,16 +2,24 @@ package com.grikly;
 
 import com.grikly.request.IHttpRequest;
 
-
+/**
+ * GriklyClient creates worker threads
+ * to process HTTP Request.
+ * 
+ * @author Mario Dennis
+ * @param <E>
+ * @param <T>
+ */
 public class GriklyClient <E,T>{
 
 	private final IHttpRequest<E,T> request;
 	private final ResponseListener<T> response;
 	
 	/**
-	 * @param request
-	 * @param response
-	 * @param url
+	 * GriklyClient Default Constructor.
+	 * @author Mario Dennis
+	 * @param IHttpRequest<E,T> 
+	 * @param ResponseListener<T>
 	 */
 	protected GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response)
 	{
