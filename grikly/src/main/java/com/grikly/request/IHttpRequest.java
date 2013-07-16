@@ -1,7 +1,5 @@
 package com.grikly.request;
 
-import com.grikly.URL;
-
 /**
  * HTTP Request Interface that all request class
  * must implement.
@@ -17,6 +15,6 @@ public interface IHttpRequest<E,T>{
 	 * @param url
 	 * @return
 	 */
-	public T execute(URL url);
+	public T execute();
 	
 }//end IHttpRequest interface

@@ -2,13 +2,7 @@ package com.grikly;
 
 public enum URL {
 
-	ACCOUNT_REGISTER ("http://api.grik.ly/v1/Account/Register"),
-	ACCOUNT_EMAIL_CHECK ("http://api.grik.ly/v1/Account/EmailExist"),
-	ACCOUNT_LOGIN("http://api.grik.ly/v1/Account/Login"),
-	ACCOUNT("http://api.grik.ly/v1/Account/%s"),
-	USER ("http://api.grik.ly/v1/Users/%d"),
-	CARD_BASE ("http://api.grik.ly/v1/Cards/"),
-	CARD ("http://api.grik.ly/v1/Cards/%d");
+	BASE ("http://api.grik.ly/v1/%s");
 	
 	private final String url;
 	

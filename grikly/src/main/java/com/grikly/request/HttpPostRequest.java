@@ -9,40 +9,53 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 
-public class HttpPostRequest <E,T> implements IHttpRequest<E,T> {
-
-	private String apiKey;
-	private E model;
-	private Class<T> type;
+public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 	
-	public HttpPostRequest(String apiKey,E model,Class<T> type)
+	protected HttpPostRequest(HttpBuilder<E, T> builder)
 	{
-		this.apiKey = apiKey;
-		this.model = model;
-		this.type = type;
-	}
+		super(builder);
+	}//end constructor
+	
 	
 	/**
-	 * Execute HTTP POST request.
+	 * Execute HTTP POST request to Grikly Server.
 	 * @author Mario Dennis
 	 */
-	public T execute(URL url) 
+	public T execute() 
 	{
 		Client client = JerseyUtil.getClient();
-		WebResource resource = client.resource(url.toString());
+		if (getPath() == null)
+			throw new NullPointerException ("No Path was supplied");
+		
+		if (getModel() == null)
+			throw new NullPointerException ("No Model was supplied");
+		
+		WebResource resource = client.resource(String.format(URL.BASE.toString(), getPath()));
 		Gson gson = new Gson();
-		ClientResponse response = resource.header("ApiKey", apiKey)
-											.type(MediaType.APPLICATION_JSON)
-											.accept(MediaType.APPLICATION_JSON)
-											.post(ClientResponse.class,gson.toJson(model));
+		
+		ClientResponse response;
+		
+		//adds authInfo when supplied
+		if (getAuthInfo() != null)
+			response = resource.header("ApiKey", getApiKey())
+							   .header("Authorization","Basic " + getAuthInfo())
+							   .type(MediaType.APPLICATION_JSON)
+							   .accept(MediaType.APPLICATION_JSON)
+							   .post(ClientResponse.class,gson.toJson(getModel()));
+		
+		else 
+			response = resource.header("ApiKey", getApiKey())
+							   .header("Authorization","Basic " + getAuthInfo())
+							   .type(MediaType.APPLICATION_JSON)
+							   .accept(MediaType.APPLICATION_JSON)
+							   .post(ClientResponse.class,gson.toJson(getModel()));
+
 		if (response.getStatus() == 200)
 		{
-			if (response.getHeaders().get("Content-type").equals("application/json; charset=utf-8"))
-			{
-				String json = response.getEntity(String.class);
-				return gson.fromJson(json, type);
-			}
+			String json = response.getEntity(String.class);
+			return gson.fromJson(json, getType());
 		}
+		System.err.println(response.getClientResponseStatus());
 		return null;
 	}//end execute method
 

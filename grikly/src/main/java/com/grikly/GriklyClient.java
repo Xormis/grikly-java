@@ -7,18 +7,16 @@ public class GriklyClient <E,T>{
 
 	private final IHttpRequest<E,T> request;
 	private final ResponseListener<T> response;
-	private final URL url;
 	
 	/**
 	 * @param request
 	 * @param response
 	 * @param url
 	 */
-	protected GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response,URL url)
+	protected GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response)
 	{
 		this.request = request;
 		this.response = response;
-		this.url = url;
 	}//end constructor
 	
 	
@@ -30,7 +28,15 @@ public class GriklyClient <E,T>{
 	 */
 	public void execute ()
 	{
-		GriklyThread<E,T> thread = new GriklyThread<E,T>(request, response,url);
+		Runnable thread = new Runnable() 
+		{
+			
+			public void run() 
+			{
+				T result = (T) request.execute ();	
+				response.response(result);
+			}
+		};
 		new Thread(thread).start();
 	}//end execute method
 	
