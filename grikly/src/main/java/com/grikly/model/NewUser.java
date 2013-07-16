@@ -6,59 +6,86 @@ public class NewUser{
 	 private String LastName;
 	 private String Email;
 	 private String Password;
+	 
+	 
 	/**
 	 * @return the firstName
 	 */
-	public String getFirstName() {
+	public String getFirstName() 
+	{
 		return FirstName;
 	}
+	
+	
 	/**
 	 * @param firstName the firstName to set
 	 */
-	public void setFirstName(String firstName) {
+	public void setFirstName(String firstName) 
+	{
 		FirstName = firstName;
 	}
+	
+	
 	/**
 	 * @return the lastName
 	 */
-	public String getLastName() {
+	public String getLastName() 
+	{
 		return LastName;
 	}
+	
+	
 	/**
 	 * @param lastName the lastName to set
 	 */
-	public void setLastName(String lastName) {
+	public void setLastName(String lastName) 
+	{
 		LastName = lastName;
 	}
+	
+	
 	/**
 	 * @return the email
 	 */
-	public String getEmail() {
+	public String getEmail() 
+	{
 		return Email;
 	}
+	
+	
 	/**
 	 * @param email the email to set
 	 */
-	public void setEmail(String email) {
+	public void setEmail(String email) 
+	{
 		Email = email;
 	}
+	
+	
 	/**
 	 * @return the password
 	 */
-	public String getPassword() {
+	public String getPassword() 
+	{
 		return Password;
 	}
+	
+	
 	/**
 	 * @param password the password to set
 	 */
-	public void setPassword(String password) {
+	public void setPassword(String password) 
+	{
 		Password = password;
 	}
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return "NewUser [FirstName=" + FirstName + ", LastName=" + LastName
 				+ ", Email=" + Email + ", Password=" + Password + "]";
 	}
