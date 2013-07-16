@@ -12,7 +12,7 @@ public class SendCard {
 	public List<String> getEmail() 
 	{
 		return Email;
-	}
+	}//end getEmail method
 
 	
 	/**
@@ -21,7 +21,7 @@ public class SendCard {
 	public void setEmail(List<String> email) 
 	{
 		Email = email;
-	}
+	}//end getEmail method
 	
 	
 }//end SendCard class
