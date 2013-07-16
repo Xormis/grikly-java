@@ -9,9 +9,23 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * HttpDeleteRequest is used to execute a HTTP
+ * Request using the HTTP DELETE method. This class 
+ * is thread-safe and cannot be sub-classed.
+ * @author Mario Dennis
+ *
+ * @param <E>
+ * @param <T>
+ */
 public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 
 
+	/**
+	 * HttpDeleteRequest Default Constructor.
+	 * @author Mario Dennis
+	 * @param HttpBuilder<E, T>
+	 */
 	protected HttpDeleteRequest (HttpBuilder<E, T> builder)
 	{
 		super(builder);
@@ -21,6 +35,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 	/**
 	 * Executes HTTP DELETE Request to Grikly Server.
 	 * @author Mario Dennis
+	 * @return T
 	 */
 	public T execute()
 	{
