@@ -30,7 +30,8 @@ public class Card{
 	/**
 	 * @param cardId the cardId to set
 	 */
-	public void setCardId(int cardId) {
+	public void setCardId(int cardId) 
+	{
 		CardId = cardId;
 	}
 
@@ -38,7 +39,8 @@ public class Card{
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(int userId) {
+	public void setUserId(int userId) 
+	{
 		UserId = userId;
 	}
 
@@ -46,7 +48,8 @@ public class Card{
 	/**
 	 * @param firstName the firstName to set
 	 */
-	public void setFirstName(String firstName) {
+	public void setFirstName(String firstName) 
+	{
 		FirstName = firstName;
 	}
 
@@ -54,7 +57,8 @@ public class Card{
 	/**
 	 * @param lastName the lastName to set
 	 */
-	public void setLastName(String lastName) {
+	public void setLastName(String lastName)
+	{
 		LastName = lastName;
 	}
 
@@ -62,7 +66,8 @@ public class Card{
 	/**
 	 * @param workNumber the workNumber to set
 	 */
-	public void setWorkNumber(String workNumber) {
+	public void setWorkNumber(String workNumber)
+	{
 		WorkNumber = workNumber;
 	}
 
@@ -70,7 +75,8 @@ public class Card{
 	/**
 	 * @param cellNumber the cellNumber to set
 	 */
-	public void setCellNumber(String cellNumber) {
+	public void setCellNumber(String cellNumber) 
+	{
 		CellNumber = cellNumber;
 	}
 
@@ -78,7 +84,8 @@ public class Card{
 	/**
 	 * @param email the email to set
 	 */
-	public void setEmail(String email) {
+	public void setEmail(String email) 
+	{
 		Email = email;
 	}
 
@@ -86,7 +93,8 @@ public class Card{
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(String title) 
+	{
 		Title = title;
 	}
 
@@ -94,7 +102,8 @@ public class Card{
 	/**
 	 * @param userProfileImageUrl the userProfileImageUrl to set
 	 */
-	public void setUserProfileImageUrl(String userProfileImageUrl) {
+	public void setUserProfileImageUrl(String userProfileImageUrl) 
+	{
 		UserProfileImageUrl = userProfileImageUrl;
 	}
 
@@ -102,7 +111,8 @@ public class Card{
 	/**
 	 * @param companyName the companyName to set
 	 */
-	public void setCompanyName(String companyName) {
+	public void setCompanyName(String companyName)
+	{
 		CompanyName = companyName;
 	}
 
@@ -110,7 +120,8 @@ public class Card{
 	/**
 	 * @param companyAddress the companyAddress to set
 	 */
-	public void setCompanyAddress(String companyAddress) {
+	public void setCompanyAddress(String companyAddress) 
+	{
 		CompanyAddress = companyAddress;
 	}
 
@@ -118,7 +129,8 @@ public class Card{
 	/**
 	 * @param companyLatitude the companyLatitude to set
 	 */
-	public void setCompanyLatitude(double companyLatitude) {
+	public void setCompanyLatitude(double companyLatitude) 
+	{
 		CompanyLatitude = companyLatitude;
 	}
 
@@ -126,7 +138,8 @@ public class Card{
 	/**
 	 * @param companyLongitude the companyLongitude to set
 	 */
-	public void setCompanyLongitude(double companyLongitude) {
+	public void setCompanyLongitude(double companyLongitude) 
+	{
 		CompanyLongitude = companyLongitude;
 	}
 
@@ -134,7 +147,8 @@ public class Card{
 	/**
 	 * @param logoUrl the logoUrl to set
 	 */
-	public void setLogoUrl(String logoUrl) {
+	public void setLogoUrl(String logoUrl) 
+	{
 		LogoUrl = logoUrl;
 	}
 
@@ -142,7 +156,8 @@ public class Card{
 	/**
 	 * @param qrCodeUrl the qrCodeUrl to set
 	 */
-	public void setQrCodeUrl(String qrCodeUrl) {
+	public void setQrCodeUrl(String qrCodeUrl) 
+	{
 		QrCodeUrl = qrCodeUrl;
 	}
 
@@ -150,7 +165,8 @@ public class Card{
 	/**
 	 * @param qrVCardUrl the qrVCardUrl to set
 	 */
-	public void setQrVCardUrl(String qrVCardUrl) {
+	public void setQrVCardUrl(String qrVCardUrl) 
+	{
 		QrVCardUrl = qrVCardUrl;
 	}
 
@@ -158,7 +174,8 @@ public class Card{
 	/**
 	 * @param vCardUrl the vCardUrl to set
 	 */
-	public void setVCardUrl(String vCardUrl) {
+	public void setVCardUrl(String vCardUrl)
+	{
 		VCardUrl = vCardUrl;
 	}
 
@@ -166,7 +183,8 @@ public class Card{
 	/**
 	 * @param facebookUrl the facebookUrl to set
 	 */
-	public void setFacebookUrl(String facebookUrl) {
+	public void setFacebookUrl(String facebookUrl) 
+	{
 		FacebookUrl = facebookUrl;
 	}
 
@@ -174,7 +192,8 @@ public class Card{
 	/**
 	 * @param website the website to set
 	 */
-	public void setWebsite(String website) {
+	public void setWebsite(String website)
+	{
 		Website = website;
 	}
 
@@ -182,7 +201,8 @@ public class Card{
 	/**
 	 * @param shareCount the shareCount to set
 	 */
-	public void setShareCount(int shareCount) {
+	public void setShareCount(int shareCount)
+	{
 		ShareCount = shareCount;
 	}
 
@@ -190,7 +210,8 @@ public class Card{
 	/**
 	 * @return the cardId
 	 */
-	public int getCardId() {
+	public int getCardId() 
+	{
 		return CardId;
 	}
 	
@@ -198,7 +219,8 @@ public class Card{
 	/**
 	 * @return the userId
 	 */
-	public int getUserId() {
+	public int getUserId()
+	{
 		return UserId;
 	}
 	
@@ -206,7 +228,8 @@ public class Card{
 	/**
 	 * @return the firstName
 	 */
-	public String getFirstName() {
+	public String getFirstName() 
+	{
 		return FirstName;
 	}
 	
@@ -214,7 +237,8 @@ public class Card{
 	/**
 	 * @return the lastName
 	 */
-	public String getLastName() {
+	public String getLastName() 
+	{
 		return LastName;
 	}
 	
@@ -222,7 +246,8 @@ public class Card{
 	/**
 	 * @return the workNumber
 	 */
-	public String getWorkNumber() {
+	public String getWorkNumber()
+	{
 		return WorkNumber;
 	}
 	
@@ -230,7 +255,8 @@ public class Card{
 	/**
 	 * @return the cellNumber
 	 */
-	public String getCellNumber() {
+	public String getCellNumber()
+	{
 		return CellNumber;
 	}
 	
@@ -238,7 +264,8 @@ public class Card{
 	/**
 	 * @return the email
 	 */
-	public String getEmail() {
+	public String getEmail() 
+	{
 		return Email;
 	}
 	
@@ -246,7 +273,8 @@ public class Card{
 	/**
 	 * @return the title
 	 */
-	public String getTitle() {
+	public String getTitle() 
+	{
 		return Title;
 	}
 	
@@ -254,7 +282,8 @@ public class Card{
 	/**
 	 * @return the userProfileImageUrl
 	 */
-	public String getUserProfileImageUrl() {
+	public String getUserProfileImageUrl() 
+	{
 		return UserProfileImageUrl;
 	}
 	
@@ -262,7 +291,8 @@ public class Card{
 	/**
 	 * @return the companyName
 	 */
-	public String getCompanyName() {
+	public String getCompanyName() 
+	{
 		return CompanyName;
 	}
 	
@@ -270,7 +300,8 @@ public class Card{
 	/**
 	 * @return the companyAddress
 	 */
-	public String getCompanyAddress() {
+	public String getCompanyAddress()
+	{
 		return CompanyAddress;
 	}
 	
@@ -278,7 +309,8 @@ public class Card{
 	/**
 	 * @return the companyLatitude
 	 */
-	public double getCompanyLatitude() {
+	public double getCompanyLatitude()
+	{
 		return CompanyLatitude;
 	}
 	
@@ -286,7 +318,8 @@ public class Card{
 	/**
 	 * @return the companyLongitude
 	 */
-	public double getCompanyLongitude() {
+	public double getCompanyLongitude()
+	{
 		return CompanyLongitude;
 	}
 	
@@ -294,7 +327,8 @@ public class Card{
 	/**
 	 * @return the logoUrl
 	 */
-	public String getLogoUrl() {
+	public String getLogoUrl()
+	{
 		return LogoUrl;
 	}
 	
@@ -302,7 +336,8 @@ public class Card{
 	/**
 	 * @return the qrCodeUrl
 	 */
-	public String getQrCodeUrl() {
+	public String getQrCodeUrl() 
+	{
 		return QrCodeUrl;
 	}
 	
@@ -310,7 +345,8 @@ public class Card{
 	/**
 	 * @return the qrVCardUrl
 	 */
-	public String getQrVCardUrl() {
+	public String getQrVCardUrl()
+	{
 		return QrVCardUrl;
 	}
 	
@@ -318,7 +354,8 @@ public class Card{
 	/**
 	 * @return the vCardUrl
 	 */
-	public String getVCardUrl() {
+	public String getVCardUrl() 
+	{
 		return VCardUrl;
 	}
 	
@@ -326,7 +363,8 @@ public class Card{
 	/**
 	 * @return the facebookUrl
 	 */
-	public String getFacebookUrl() {
+	public String getFacebookUrl() 
+	{
 		return FacebookUrl;
 	}
 	
@@ -334,7 +372,8 @@ public class Card{
 	/**
 	 * @return the website
 	 */
-	public String getWebsite() {
+	public String getWebsite()
+	{
 		return Website;
 	}
 	
@@ -342,7 +381,8 @@ public class Card{
 	/**
 	 * @return the shareCount
 	 */
-	public int getShareCount() {
+	public int getShareCount() 
+	{
 		return ShareCount;
 	}
 	
@@ -351,7 +391,8 @@ public class Card{
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return "Card [CardId=" + CardId + ", UserId=" + UserId + ", FirstName="
 				+ FirstName + ", LastName=" + LastName + ", WorkNumber="
 				+ WorkNumber + ", CellNumber=" + CellNumber + ", Email="
@@ -363,8 +404,8 @@ public class Card{
 				+ ", QrVCardUrl=" + QrVCardUrl + ", VCardUrl=" + VCardUrl
 				+ ", FacebookUrl=" + FacebookUrl + ", Website=" + Website
 				+ ", ShareCount=" + ShareCount + "]";
-	}
-	
+	}//end toString method
+
 	
 	
 }//end Card class
