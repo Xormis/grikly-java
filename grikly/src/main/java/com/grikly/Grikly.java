@@ -23,9 +23,9 @@ public class Grikly{
 	
 	
 	/**
+	 * Grikly Default Constructor
 	 * @author Mario Dennis
 	 * @param apiKey user API Key
-	 * @param response 
 	 */
 	public Grikly (String apiKey)
 	{
@@ -97,6 +97,7 @@ public class Grikly{
 	
 	
 	/**
+	 * Fetch Card Asynchronously.
 	 * @author Mario Dennis
 	 * @param cardId
 	 * @param response
@@ -124,7 +125,7 @@ public class Grikly{
 	
 	
 	/**
-	 * Check if email exists.
+	 * Check if email exists Asynchronously.
 	 * @author Mario Dennis
 	 */
 	public void emailExist (String email, ResponseListener<Boolean> response)
@@ -174,6 +175,7 @@ public class Grikly{
 	
 	
 	/**
+	 * Delete Card Asynchronously.
 	 * @author Mario Dennis
 	 * @param cardId
 	 * @param response
@@ -201,7 +203,7 @@ public class Grikly{
 	
 	
 	/**
-	 * Get a valid User by Email and Password.
+	 * Get a valid User by Email and Password Asynchronously..
 	 * @author Mario Dennis
 	 * @param model
 	 * @param response
@@ -227,7 +229,7 @@ public class Grikly{
 	
 	
 	/**
-	 * Registers new User.
+	 * Registers new User Asynchronously..
 	 * @param newUser 
 	 * @param response
 	 */
@@ -254,6 +256,7 @@ public class Grikly{
 	
 	
 	/**
+	 * Update card Asynchronously.
 	 * @author Mario Dennis
 	 * @param card
 	 * @param response
@@ -280,7 +283,7 @@ public class Grikly{
 	
 	
 	/**
-	 * 
+	 * Send Card Asynchronously.
 	 * @author Mario Dennis
 	 * @param cardId
 	 * @param model
