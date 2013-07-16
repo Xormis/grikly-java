@@ -2,7 +2,7 @@ package com.grikly.request;
 
 /**
  * HTTP Request Interface that all request class
- * must implement.
+ * should implement.
  * @author Mario Dennis
  * @param <E> element type for data sending in request 
  * @param <T> return type.
