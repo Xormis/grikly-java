@@ -160,7 +160,8 @@ public class User{
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return "User [UserId=" + UserId + ", FirstName=" + FirstName
 				+ ", LastName=" + LastName + ", Email=" + Email
 				+ ", ContactsCount=" + ContactsCount + ", ProfileImageUrl="
