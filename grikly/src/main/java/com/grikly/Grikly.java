@@ -119,6 +119,8 @@ public class Grikly{
 	}//end getUser method 
 	
 	
+	
+	
 	/**
 	 * Fetch Card Asynchronously.
 	 * @author Mario Dennis
@@ -146,6 +148,30 @@ public class Grikly{
 	}//end emailExist method
 	
 	
+	/**
+	 * Get Card
+	 * @author Mario Dennis
+	 * @param cardId
+	 * @return Card
+	 */
+	public Card getCard (int cardId)
+	{
+		if (cardId <= 0)
+			throw new IllegalArgumentException("Card Id must be greater than zero");
+		
+		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
+		builder.setPath(String.format("Cards/%d", cardId));
+		
+		//add authInfo if supplied 
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Integer, Card> request = builder.buildHttpGet();
+		
+		return request.execute();
+	}//end getCard method
+	
+	
 	
 	/**
 	 * Check if email exists Asynchronously.
@@ -169,6 +195,32 @@ public class Grikly{
 		GriklyClient<String, Boolean> client = new GriklyClient<String, Boolean>(request, response);
 		client.execute();
 	}//end emailExist method
+	
+	
+	/**
+	 *  Check if email exists 
+	 * @author Mario Dennis
+	 * @return Boolean
+	 */
+	public boolean isEmailExist (String email)
+	{
+		if (email == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
+		queryMap.add("Email", email);
+		
+		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean> (Boolean.class,getApiKey());
+		builder.addQueryParam(queryMap);
+		builder.setPath("Account/EmailExist");
+		
+		//add authInfo if supplied 
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<String, Boolean> request = builder.buildHttpGet();
+		return request.execute();
+	}//end isEmailExist method
 	
 	
 	
