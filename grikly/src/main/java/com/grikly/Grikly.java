@@ -376,6 +376,29 @@ public class Grikly{
 	}//end register method
 	
 
+	/**
+	 * Registers new User
+	 * @author Mario Dennis
+	 * @param newUser
+	 * @return User
+	 */
+	public User register (NewUser newUser)
+	{
+		if (newUser == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		HttpBuilder<NewUser, User> builder = new HttpBuilder<NewUser, User>(User.class, getApiKey());
+		builder.setModel(newUser);
+		builder.setPath("Account/Register");
+		
+		//add authInfo if supplied
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<NewUser, User> request = builder.buildHttpPost();
+		return request.execute();
+	}//end register method
+	
 	
 	
 	/**
