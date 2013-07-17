@@ -302,6 +302,30 @@ public class Grikly{
 	}//end fetchValidUser method
 	
 	
+	/**
+	 * Get a valid User by Email and Password ..
+	 * @author Mario Dennis
+	 * @param model
+	 * @param response
+	 */
+	public User getValidUser (LoginModel model)
+	{
+		if (model == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		HttpBuilder<LoginModel, User> builder = new HttpBuilder<LoginModel, User>(User.class, getApiKey());
+		builder.setModel(model);
+		builder.setPath("Account/Login");
+		
+		//add authInfo if supplied 
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<LoginModel, User> request = builder.buildHttpPost();
+		return request.execute();
+	}//end getValidUser method
+	
+	
 	
 	/**
 	 * Registers new User Asynchronously..
