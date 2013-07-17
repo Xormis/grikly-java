@@ -248,6 +248,30 @@ public class Grikly{
 	}//end createCard method
 	
 	
+	/**
+	 * Create card.
+	 * @author Mario Dennis
+	 * @param card
+	 * @return
+	 */
+	public Card createCard (Card card)
+	{
+		if (card == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		builder.setModel(card);
+		builder.setPath("Cards");
+		
+		//add authInfo if supplied
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Card, Card> request = builder.buildHttpPost();
+		return request.execute();
+	}//end createCard method
+	
+	
 	
 	/**
 	 * Delete Card Asynchronously.
