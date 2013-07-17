@@ -97,6 +97,29 @@ public class Grikly{
 	
 	
 	/**
+	 * Get User.
+	 * @author Mario Dennis
+	 * @param userId
+	 * @return User
+	 */
+	public User getUser (int userId)
+	{
+		if (userId <= 0)
+			throw new IllegalArgumentException("User id must be greater than zero");
+		
+		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
+		builder.setPath(String.format("Users/%d", userId));
+		
+		//add authInfo if supplied 
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		IHttpRequest<Integer, User> request = builder.buildHttpGet();
+		
+		return request.execute();
+	}//end getUser method 
+	
+	
+	/**
 	 * Fetch Card Asynchronously.
 	 * @author Mario Dennis
 	 * @param cardId
