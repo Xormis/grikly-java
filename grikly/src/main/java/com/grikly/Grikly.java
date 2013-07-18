@@ -589,6 +589,7 @@ public class Grikly{
 	
 	/**
 	 * Update Contact Asynchronously.
+	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
 	 */
@@ -607,11 +608,12 @@ public class Grikly{
 		IHttpRequest<Contact, Contact> request = builder.buildHttpPut();
 		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
 		client.execute();
-	}//ed updateContact method
+	}//end updateContact method
 	
 	
 	/**
 	 * Update Contact.
+	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
 	 */
@@ -629,6 +631,27 @@ public class Grikly{
 		
 		IHttpRequest<Contact, Contact> request = builder.buildHttpPut();
 		return request.execute();
-	}//ed updateContact method
+	}//end updateContact method
 	
+	
+	
+	/**
+	 * 
+	 * @param contactId
+	 * @return
+	 */
+	public Contact deleteContact (int contactId)
+	{
+		if (contactId <= 0)
+			throw new IllegalArgumentException("contactId must be greater that zero");
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		builder.setPath(String.format("Contacts/%d", contactId));
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Contact, Contact> request = builder.buildHttpDelete();
+		return request.execute();
+	}//end deleteContact method
 }//end  Grikly class
