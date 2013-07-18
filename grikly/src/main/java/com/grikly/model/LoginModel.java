@@ -5,6 +5,21 @@ public class LoginModel{
 	private String Email;
 	private String Password;
 	
+	//Default constructor
+	public LoginModel (){}
+	
+	
+	/**
+	 * Login Model Overloaded constructor
+	 * @param email
+	 * @param password
+	 */
+	public LoginModel (String email,String password)
+	{
+		this.Email = email;
+		this.Password = password;
+	}//end constructor
+	
 	
 	/**
 	 * @return the email
