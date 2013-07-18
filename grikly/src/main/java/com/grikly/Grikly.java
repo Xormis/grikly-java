@@ -263,7 +263,8 @@ public class Grikly{
 	
 	
 	/**
-	 * Create card.
+	 * Create card.This method requires user credentials to 
+	 * authorize action.
 	 * @author Mario Dennis
 	 * @param card
 	 * @return
@@ -315,7 +316,8 @@ public class Grikly{
 	
 	
 	/**
-	 * 
+	 * Delete Card. This method requires user credentials to 
+	 * authorize action.
 	 * @param cardId
 	 */
 	public Card deleteCard (int cardId)
