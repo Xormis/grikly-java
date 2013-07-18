@@ -22,7 +22,7 @@ public class App
 		card.setEmail("mario_leif2000@yahoo.com");
 		
 		Contact contact = new Contact();
-		contact.setCardId(1);
+		contact.setCardId(2);
 		contact.setComment("Test");
 		contact.setDateMet(new Date());
 		contact.setPlaceMet("Jamaica");
@@ -33,9 +33,8 @@ public class App
 		//Card response = grikly.createCard(card);
 		//Card response = grikly.getCard(3018);
 		//Card response = grikly.deleteCard(3019);
-		//Contact response = grikly.createContact(contact);
 		//System.out.println(response);
-		System.out.println(grikly.getContact("mdennis876@gmail.com", 1));
+		//System.out.println(grikly.getContact("mdennis876@gmail.com", 1));
 	}
 	
     public static void main( String[] args )

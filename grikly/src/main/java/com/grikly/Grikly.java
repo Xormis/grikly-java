@@ -543,14 +543,13 @@ public class Grikly{
 	}//end getContact method
 	
 	
-	
 	/**
-	 * Create Contact
+	 * Create Contact Asynchronously.
 	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
 	 */
-	public Contact createContact(Contact contact)
+	public void createContact(Contact contact,ResponseListener<Contact> response)
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
@@ -563,6 +562,31 @@ public class Grikly{
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Contact, Contact> request = builder.buildHttpPost();
+		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		client.execute();
+	}//end createContact method 
+	
+	
+	
+	/**
+	 * Create Contact
+	 * @author Mario Dennis
+	 * @param contact
+	 * @return Contact
+	 */
+	public Contact createContact(Contact contact)
+	{
+		if (contact == null || contact == null)
+			throw new NullPointerException("Null argument supplied");
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
+		builder.setPath("Contacts");
+		builder.setModel(contact);
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Contact, Contact> request = builder.buildHttpPost();
 		return request.execute();
-	}
+	}//end createContact method 
 }//end  Grikly class
