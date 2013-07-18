@@ -53,7 +53,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 		else 
 			response = resource.header("ApiKey",getApiKey())
 							   .type(MediaType.APPLICATION_JSON)
-							   .get(ClientResponse.class);
+							   .delete(ClientResponse.class);
 		
 		if (response.getStatus() == 200)
 		{
