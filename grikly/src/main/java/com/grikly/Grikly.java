@@ -51,7 +51,7 @@ public class Grikly{
 	 */
 	public boolean isAuthed ()
 	{
-		if (this.authInfo == null)
+		if (authInfo == null)
 			return false;
 		else 
 			return true;
@@ -439,6 +439,30 @@ public class Grikly{
 		client.execute();
 	}//end updateCard method 
 	
+	
+	/**
+	 * Update card Asynchronously.
+	 * @author Mario Dennis
+	 * @param card
+	 * @param response
+	 */
+	public Card updateCard (Card card)
+	{
+		if (card == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		HttpBuilder<Card,Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		builder.setModel(card);
+		builder.setPath(String.format("Card/%d", card.getCardId()));
+		
+		//add authInfo if supplied
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Card, Card> request = builder.buildHttpPut();
+		
+		return request.execute();
+	}//end updateCard method 
 	
 	
 	
