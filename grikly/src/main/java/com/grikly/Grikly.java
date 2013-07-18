@@ -3,9 +3,7 @@ package com.grikly;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.core.MultivaluedMap;
-
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
@@ -16,8 +14,6 @@ import com.grikly.request.HttpBuilder;
 import com.grikly.request.IHttpRequest;
 import com.sun.jersey.core.util.Base64;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-
-
 
 public class Grikly{
 
@@ -589,4 +585,50 @@ public class Grikly{
 		IHttpRequest<Contact, Contact> request = builder.buildHttpPost();
 		return request.execute();
 	}//end createContact method 
+	
+	
+	/**
+	 * Update Contact Asynchronously.
+	 * @param contact
+	 * @return Contact
+	 */
+	public void updateContact (Contact contact,ResponseListener<Contact> response)
+	{
+		if (contact == null)
+			throw new NullPointerException("Null argument supplied");
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		builder.setModel(contact);
+		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Contact, Contact> request = builder.buildHttpPut();
+		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		client.execute();
+	}//ed updateContact method
+	
+	
+	/**
+	 * Update Contact.
+	 * @param contact
+	 * @return Contact
+	 */
+	public Contact updateContact (Contact contact)
+	{
+		if (contact == null)
+			throw new NullPointerException("Null argument supplied");
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		builder.setModel(contact);
+		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Contact, Contact> request = builder.buildHttpPut();
+		return request.execute();
+	}//ed updateContact method
+	
 }//end  Grikly class
