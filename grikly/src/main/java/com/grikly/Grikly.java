@@ -1,10 +1,13 @@
 package com.grikly;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.grikly.model.Card;
+import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
 import com.grikly.model.NewUser;
 import com.grikly.model.SendCard;
@@ -516,4 +519,50 @@ public class Grikly{
 	}//end sendCard method
 	
 	
+	public List<Card> getContact (String searchString,int page)
+	{
+		if (searchString ==  null)
+			throw new NullPointerException("Null argument supplied");
+		
+		if (page <= 0)
+			throw new IllegalArgumentException("page must be greater than 0");
+		
+		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
+		queryMap.add("searchText", searchString);
+		queryMap.add("page", new Integer(1).toString());
+
+		HttpBuilder<String, List<Card>> builder = new HttpBuilder<String, List<Card>>((Class<List<Card>>) new ArrayList<Card>().getClass(), getApiKey());
+		builder.addQueryParam(queryMap);
+		builder.setPath("Contacts");
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<String, List<Card>> request = builder.buildHttpGet();
+		return request.execute();
+	}//end getContact method
+	
+	
+	
+	/**
+	 * Create Contact
+	 * @author Mario Dennis
+	 * @param contact
+	 * @return Contact
+	 */
+	public Contact createContact(Contact contact)
+	{
+		if (contact == null)
+			throw new NullPointerException("Null argument supplied");
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
+		builder.setPath("Contacts");
+		builder.setModel(contact);
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Contact, Contact> request = builder.buildHttpPost();
+		return request.execute();
+	}
 }//end  Grikly class

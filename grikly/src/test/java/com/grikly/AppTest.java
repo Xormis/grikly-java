@@ -21,61 +21,50 @@ public class AppTest{
 		Assert.assertNotNull(grikly.getApiKey());
 	}//end getApiKey Test
 	
-	
 	@Test
-	public void fetchUser ()
+	public void getUser ()
 	{
-		grikly.fetchUser(1, new ResponseListener<User>() {
-			
-			public void response(User result) {
-				Assert.assertNotNull(result);
-				
-			}
-		});
-	}//end fetchUser Test
+		User user = grikly.getUser(1);
+		Assert.assertNotNull(user);
+	}//end getUser Test
 	
 	
 	@Test
-	public void fetchCard ()
+	public void getCard ()
 	{
-		grikly.fetchCard(1, new ResponseListener<Card>() {
-			
-			public void response(Card result) {
-				Assert.assertNotNull(result);
-				
-			}
-		});
-	}//end fetchCard Test
+		Card card = grikly.getCard(1);
+		Assert.assertNotNull(card);
+	}//end getCard Test
 	
 	
 	@Test
-	public void emailExist ()
+	public void isEmailExist ()
 	{
-		grikly.emailExist("mdennis876@gmail.com", new ResponseListener<Boolean>() {
-			
-			public void response(Boolean result) {
-				Assert.assertNotNull(result);
-				
-			}
-		});
-	}//end emailExist Test
+		grikly.addValidUserCredential("mdennis876@gmail.com", "computer");
+		Assert.assertTrue(grikly.emailExist("mdennis876@gmail.com"));
+	}//end isEmailExist Test
 	
 	
 	@Test
-	public void fetchValidUser () 
+	public void getValidUser ()
 	{
 		LoginModel model = new LoginModel();
 		model.setEmail("mdennis876@gmail.com");
 		model.setPassword("computer");
+		grikly.addValidUserCredential("mdennis876@gmail.com", "computer");
+		Assert.assertNotNull(grikly.getValidUser(model));
+	}//end getValidUser Test
+	
+	
+	public void createCardSync ()
+	{
+		grikly.addValidUserCredential("mdennis876@gmail.com", "computer");
+		grikly.createCard(null);
+	}//end createCardSync method
+	
+	
+	public void updateCard ()
+	{
 		
-		grikly.fetchValidUser(model, new ResponseListener<User>() {
-			
-			public void response(User result) {
-				Assert.assertNotNull(result);	
-				System.out.println(result);
-			}
-		});
-	}//end fetchValidUser Test
-	
-	
+	}//end updateCard Test
 }//end AppTest 
