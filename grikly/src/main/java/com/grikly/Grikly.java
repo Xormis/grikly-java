@@ -45,6 +45,20 @@ public class Grikly{
 	
 	
 	/**
+	 * Check if user is authenticated
+	 * @author Mario Dennis
+	 * @return boolean
+	 */
+	public boolean isAuthed ()
+	{
+		if (this.authInfo == null)
+			return false;
+		else 
+			return true;
+	}//end isAuthed method
+	
+	
+	/**
 	 * Add the credentials of the user to make authenticated 
 	 * requests.
 	 * @author Mario Dennis
@@ -86,7 +100,7 @@ public class Grikly{
 		builder.setPath(String.format("Users/%d", userId));
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Integer, User> request =  builder.buildHttpGet();
@@ -111,7 +125,7 @@ public class Grikly{
 		builder.setPath(String.format("Users/%d", userId));
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		IHttpRequest<Integer, User> request = builder.buildHttpGet();
 		
@@ -139,7 +153,7 @@ public class Grikly{
 		builder.setPath(String.format("Cards/%d", cardId));
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Integer, Card> request = builder.buildHttpGet();
@@ -163,7 +177,7 @@ public class Grikly{
 		builder.setPath(String.format("Cards/%d", cardId));
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Integer, Card> request = builder.buildHttpGet();
@@ -188,7 +202,7 @@ public class Grikly{
 													.setPath("Account/EmailExist")
 													.addQueryParam(queryMap);
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		 IHttpRequest<String, Boolean> request = builder.buildHttpGet();
@@ -215,7 +229,7 @@ public class Grikly{
 		builder.setPath("Account/EmailExist");
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<String, Boolean> request = builder.buildHttpGet();
@@ -239,7 +253,7 @@ public class Grikly{
 		builder.setPath("Cards");
 		
 		//add authInfo if supplied 
-		if (authInfo != null);
+		if (isAuthed());
 			builder.setAuthInfo(authInfo);
 			
 		IHttpRequest<Card, Card> request = builder.buildHttpPost();
@@ -264,7 +278,7 @@ public class Grikly{
 		builder.setPath("Cards");
 		
 		//add authInfo if supplied
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Card, Card> request = builder.buildHttpPost();
@@ -291,7 +305,7 @@ public class Grikly{
 		builder.setPath(String.format("Cards/%d", cardId));
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Card, Card> request = builder.buildHttpDelete();
@@ -317,7 +331,7 @@ public class Grikly{
 		builder.setPath("Account/Login");
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<LoginModel, User> request = builder.buildHttpPost();
@@ -342,7 +356,7 @@ public class Grikly{
 		builder.setPath("Account/Login");
 		
 		//add authInfo if supplied 
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<LoginModel, User> request = builder.buildHttpPost();
@@ -366,7 +380,7 @@ public class Grikly{
 		builder.setPath("Account/Register");
 		
 		//add authInfo if supplied
-		if(authInfo != null)
+		if(isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		
@@ -392,7 +406,7 @@ public class Grikly{
 		builder.setPath("Account/Register");
 		
 		//add authInfo if supplied
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<NewUser, User> request = builder.buildHttpPost();
@@ -417,7 +431,7 @@ public class Grikly{
 		builder.setPath(String.format("Cards/%d", card.getCardId()));
 		
 		//add authInfo if supplied
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<Card, Card> request = builder.buildHttpPut();
@@ -448,7 +462,7 @@ public class Grikly{
 		builder.setPath(String.format("Card/%d/",cardId));
 		
 		//add authInfo if supplied
-		if (authInfo != null)
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		IHttpRequest<SendCard, Card> request = builder.buildHttpDelete();
