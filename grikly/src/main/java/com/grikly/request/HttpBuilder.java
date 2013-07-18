@@ -12,7 +12,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * @param <E>
  * @param <T>
  */
-public class HttpBuilder<E,T> {
+public final class HttpBuilder<E,T> {
 	
 	private String path;
 	private String authInfo;
