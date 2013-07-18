@@ -68,6 +68,11 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 			String json = response.getEntity(String.class);
 			return gson.fromJson(json, getType());
 		}
+		if (response.getStatus() == 201)
+		{
+			String json = response.getEntity(String.class);
+			return gson.fromJson(json, getType());
+		}
 		System.err.println(response.getClientResponseStatus());
 		return null;
 	}//end execute method
