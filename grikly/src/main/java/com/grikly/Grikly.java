@@ -216,7 +216,7 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @return Boolean
 	 */
-	public boolean isEmailExist (String email)
+	public boolean emailExist (String email)
 	{
 		if (email == null)
 			throw new NullPointerException("Null Argument Supplied");
@@ -314,6 +314,25 @@ public class Grikly{
 	}//end deleteCard method 
 	
 	
+	/**
+	 * 
+	 * @param cardId
+	 */
+	public Card deleteCard (int cardId)
+	{
+		if (cardId <= 0)
+			throw new IllegalArgumentException("Card Id must be greater than 0");
+		
+		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		builder.setPath(String.format("Cards/%d", cardId));
+		
+		//add authInfo if supplied 
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		IHttpRequest<Card, Card> request = builder.buildHttpDelete();
+		return request.execute();
+	}//end deleteCard method
 	
 	/**
 	 * Get a valid User by Email and Password Asynchronously..
