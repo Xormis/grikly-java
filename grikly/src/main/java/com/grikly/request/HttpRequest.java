@@ -10,7 +10,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * @param <E>
  * @param <T>
  */
-public abstract class HttpRequest <E,T> implements IHttpRequest<E, T> {
+public abstract class HttpRequest <E,T> implements Request<E, T> {
 	
 	private final String apiKey;
 	private final Class<T> type;
