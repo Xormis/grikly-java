@@ -17,4 +17,4 @@ public interface Request<E,T>{
 	 */
 	public T execute();
 	
-}//end IHttpRequest interface
+}//end Request interface
