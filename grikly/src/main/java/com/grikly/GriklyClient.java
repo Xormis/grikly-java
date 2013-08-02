@@ -1,6 +1,6 @@
 package com.grikly;
 
-import com.grikly.request.IHttpRequest;
+import com.grikly.request.Request;
 
 /**
  * GriklyClient creates worker threads
@@ -12,7 +12,7 @@ import com.grikly.request.IHttpRequest;
  */
 public class GriklyClient <E,T>{
 
-	private final IHttpRequest<E,T> request;
+	private final Request<E,T> request;
 	private final ResponseListener<T> response;
 	
 	/**
@@ -21,7 +21,7 @@ public class GriklyClient <E,T>{
 	 * @param IHttpRequest<E,T> 
 	 * @param ResponseListener<T>
 	 */
-	protected GriklyClient (IHttpRequest<E,T> request,ResponseListener<T> response)
+	protected GriklyClient (Request<E,T> request,ResponseListener<T> response)
 	{
 		this.request = request;
 		this.response = response;
