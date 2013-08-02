@@ -41,7 +41,7 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return HttpGetRequest<E,T>
 	 */
-	public IHttpRequest<E, T> buildHttpGet ()
+	public Request<E, T> buildHttpGet ()
 	{
 		return new HttpGetRequest<E,T>(this);
 	}//end buildHttpGet method
@@ -53,7 +53,7 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return HttpPostRequest<E,T>
 	 */
-	public IHttpRequest<E, T> buildHttpPost ()
+	public Request<E, T> buildHttpPost ()
 	{
 		return new HttpPostRequest<E, T>(this);
 	}//end  buildHttpPost method 
@@ -65,7 +65,7 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return HttpDeleteRequest<E,T>
 	 */
-	public IHttpRequest<E, T> buildHttpDelete ()
+	public Request<E, T> buildHttpDelete ()
 	{
 		return new HttpDeleteRequest<E, T>(this);
 	}//end buildHttpDelete method
@@ -77,7 +77,7 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return HttpPutRequest<E,T>
 	 */
-	public IHttpRequest<E, T> buildHttpPut ()
+	public Request<E, T> buildHttpPut ()
 	{
 		return new HttpPutRequest<E, T>(this);
 	}//end buildHttpPut method
