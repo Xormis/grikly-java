@@ -29,7 +29,7 @@ Asychronous:
 
      
 ## Necessary prerequisites
-Java 1.5 or higher, Gson, Jersey Client
+Java 1.5 or higher, Gson, Apache HttpClient
 
 
 #### Building the source
