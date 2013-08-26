@@ -1,13 +1,20 @@
 package com.grikly.request;
 
-import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
-import com.grikly.JerseyUtil;
 import com.grikly.URL;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * HttpPutRequest is used to execute a HTTP
@@ -44,32 +51,44 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 		
 		if (getModel () == null)
 			throw new NullPointerException("No Model was Supplied");
+		HttpClient client = new DefaultHttpClient ();
+		HttpPut put = new HttpPut(String.format(URL.BASE.toString(), getPath()));
 		
-		Client client = JerseyUtil.getClient();
-		WebResource resource = client.resource(String.format(URL.BASE.toString(), getPath()));
-		Gson gson = new Gson();
-		ClientResponse response;
-		
-		//adds authInfo when supplied
+		put.addHeader("ApiKey", getApiKey());
 		if (getAuthInfo() != null)
-			response = resource.header("ApiKey", getApiKey())
-							   .header("Authorization","Basic " + getAuthInfo())
-			   				   .type(MediaType.APPLICATION_JSON)
-			   				   .accept(MediaType.APPLICATION_JSON)
-			   				   .put(ClientResponse.class,gson.toJson(getModel()));
-			
-		else
-			response = resource.header("ApiKey", getApiKey())
-							   .type(MediaType.APPLICATION_JSON)
-							   .accept(MediaType.APPLICATION_JSON)
-							   .put(ClientResponse.class,gson.toJson(getModel()));
+			put.addHeader("Authorization","Basic " + getAuthInfo());
 		
-		if (response.getStatus() == 200)
+		Gson gson = new Gson();
+		
+		try 
 		{
-			String json = response.getEntity(String.class);
-			return gson.fromJson(json, getType());
+			StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
+			entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+			put.setHeader("Content-type", "application/json");
+			put.setEntity(entity);
+			
+			HttpResponse response = client.execute(put);
+			if (response.getStatusLine().getStatusCode() == 200)
+			{
+				String json = EntityUtils.toString(entity);
+				if (json != null)
+					return new Gson().fromJson(json, getType());
+			}
 		}
-		System.out.println(response.getClientResponseStatus());
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		} 
+		catch (ClientProtocolException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}//end execute method
 

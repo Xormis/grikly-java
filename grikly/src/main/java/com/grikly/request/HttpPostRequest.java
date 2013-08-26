@@ -1,12 +1,19 @@
 package com.grikly.request;
 
-import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+
 import com.google.gson.Gson;
-import com.grikly.JerseyUtil;
 import com.grikly.URL;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * HttpPostRequest is used to execute a HTTP
@@ -37,43 +44,53 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 	 */
 	public T execute() 
 	{
-		Client client = JerseyUtil.getClient();
+		
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
 		
 		if (getModel() == null)
 			throw new NullPointerException ("No Model was supplied");
 		
-		WebResource resource = client.resource(String.format(URL.BASE.toString(), getPath()));
-		Gson gson = new Gson();
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost(String.format(URL.BASE.toString(), getPath()));
 		
-		ClientResponse response;
+		post.addHeader("ApiKey",getApiKey());
 		
-		//adds authInfo when supplied
 		if (getAuthInfo() != null)
-			response = resource.header("ApiKey", getApiKey())
-							   .header("Authorization","Basic " + getAuthInfo())
-							   .type(MediaType.APPLICATION_JSON)
-							   .accept(MediaType.APPLICATION_JSON)
-							   .post(ClientResponse.class,gson.toJson(getModel()));
+			post.addHeader("Authorization","Basic " + getAuthInfo());
+		try 
+		{
+			Gson gson = new Gson ();
+			StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
+			entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+			post.setHeader("Content-type", "application/json");
+			post.setEntity(entity);
+			
+			HttpResponse response = client.execute(post);
+			
+			if(response.getStatusLine().getStatusCode() == 200)
+			{
+				String result = EntityUtils.toString(response.getEntity());
+				if (result != null)
+					return gson.fromJson(result, getType());
+			}
+			
+			if (response.getStatusLine().getStatusCode() == 201)
+			{
+				String result = EntityUtils.toString(response.getEntity());
+				if (result != null)
+					return gson.fromJson(result, getType());
+			}
+		} 
+		catch (ClientProtocolException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 		
-		else 
-			response = resource.header("ApiKey", getApiKey())
-							   .type(MediaType.APPLICATION_JSON)
-							   .accept(MediaType.APPLICATION_JSON)
-							   .post(ClientResponse.class,gson.toJson(getModel()));
-
-		if (response.getStatus() == 200)
-		{
-			String json = response.getEntity(String.class);
-			return gson.fromJson(json, getType());
-		}
-		if (response.getStatus() == 201)
-		{
-			String json = response.getEntity(String.class);
-			return gson.fromJson(json, getType());
-		}
-		System.err.println(response.getClientResponseStatus());
 		return null;
 	}//end execute method
 

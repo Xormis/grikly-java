@@ -1,12 +1,14 @@
 package com.grikly.request;
 
-import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
-import com.grikly.JerseyUtil;
 import com.grikly.URL;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * HttpGetRequest is used to execute a HTTP
@@ -39,45 +41,37 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	 */
 	public T execute() 
 	{
-		
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
 		
-		
-		Client client = JerseyUtil.getClient();
-		WebResource resource;
-		
-		resource = client.resource(String.format(URL.BASE.toString(),getPath()));
-		
-		ClientResponse response;
-		
-		//adds queryMap and authInfo when both are supplied
-		if (getQueryMap() != null && getAuthInfo() != null)
-			response = resource.queryParams(getQueryMap())
-							   .header("ApiKey",getApiKey())
-							   .header("Authorization","Basic " + getAuthInfo())
-							   .accept(MediaType.APPLICATION_JSON)
-							   .get(ClientResponse.class);
+		HttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(String.format(URL.BASE.toString(),getPath()));
+		get.addHeader("ApiKey", getApiKey());
 		
 		//adds authInfo when supplied
-		else if (getAuthInfo() != null)
-			response = resource.header("ApiKey",getApiKey())
-			   				   .header("Authorization","Basic " + getAuthInfo())
-			   				   .accept(MediaType.APPLICATION_JSON)
-			   				   .get(ClientResponse.class);
-		
-		else
-			response = resource.header("ApiKey",getApiKey()).accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-		if (response.getStatus() == 200)
+		if (getAuthInfo() != null)
+			get.addHeader("Authorization","Basic " + getAuthInfo());
+		try 
 		{
-			
-			String result = response.getEntity(String.class);
-			Gson gson = new Gson();
-			return gson.fromJson(result, getType());
-			
+			HttpResponse response = client.execute(get);
+
+			if (response.getStatusLine().getStatusCode() == 200 )
+			{
+				String entity = EntityUtils.toString(response.getEntity());
+				if (entity != null)
+					return new Gson().fromJson(entity, getType());
+			}
+		} 
+		catch (ClientProtocolException e) 
+		{
+			e.printStackTrace();
 		}
-		System.err.println(response.getClientResponseStatus() + ": " + response.getStatus()  );
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 		return null;
 	}//end execute method
-	
+
+
 }//end HttpGetRequest method

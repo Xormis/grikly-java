@@ -1,6 +1,8 @@
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.grikly.Grikly;
 import com.grikly.ResponseListener;
@@ -16,25 +18,24 @@ public class App
 	{
 		String email = "mdennis876@gmail.com";
 		String password = "computer";
-		Card card = new Card ();
-		card.setFirstName("Mario");
-		card.setLastName("Dennis");
-		card.setEmail("mario_leif2000@yahoo.com");
-		
+	
 		Contact contact = new Contact();
 		contact.setCardId(2);
-		contact.setComment("Test");
+		contact.setComment("Test1");
 		contact.setDateMet(new Date());
 		contact.setPlaceMet("Jamaica");
 		
 		Grikly grikly = new Grikly("C049DBE3-C9E6-4176-9984-27C0119DB2D0");
 		grikly.addValidUserCredential(email, password);
-		//User response = grikly.getUser(1);
-		//Card response = grikly.createCard(card);
-		//Card response = grikly.getCard(3018);
-		//Card response = grikly.deleteCard(3019);
-		//System.out.println(response);
-		//System.out.println(grikly.getContact("mdennis876@gmail.com", 1));
+		grikly.fetchCard(2,new ResponseListener<Card>() {
+			public void response(Card result) {
+				System.out.println(result);
+				
+			}
+		});
+		User user = grikly.getValidUser(new LoginModel(email,password));
+		System.out.println(user);
+		
 	}
 	
     public static void main( String[] args )
