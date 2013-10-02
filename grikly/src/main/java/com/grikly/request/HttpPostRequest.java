@@ -48,9 +48,6 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
 		
-		if (getModel() == null)
-			throw new NullPointerException ("No Model was supplied");
-		
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost(String.format(URL.BASE.toString(), getPath()));
 		
@@ -61,13 +58,17 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 		try 
 		{
 			Gson gson = new Gson ();
-			StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
-			entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-			post.setHeader("Content-type", "application/json");
-			post.setEntity(entity);
+			
+			if (getModel() != null)
+			{
+				StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
+				entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+				post.setHeader("Content-type", "application/json");
+				post.setEntity(entity);
+			}
 			
 			HttpResponse response = client.execute(post);
-			
+			System.out.println(response.getStatusLine());
 			if(response.getStatusLine().getStatusCode() == 200)
 			{
 				String result = EntityUtils.toString(response.getEntity());

@@ -51,6 +51,7 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 		
 		if (getModel () == null)
 			throw new NullPointerException("No Model was Supplied");
+		
 		HttpClient client = new DefaultHttpClient ();
 		HttpPut put = new HttpPut(String.format(URL.BASE.toString(), getPath()));
 		

@@ -1,5 +1,7 @@
 package com.grikly.request;
 
+import java.io.File;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
@@ -82,6 +84,11 @@ public final class HttpBuilder<E,T> {
 		return new HttpPutRequest<E, T>(this);
 	}//end buildHttpPut method
 	
+	
+	public Request<E,T> buildMultiPartRequest (File file,String contentType)
+	{
+		return new MultiPartRequest<E, T>(this, file, contentType);
+	}//end buildMultiPartRequest method
 	
 	
 	/**

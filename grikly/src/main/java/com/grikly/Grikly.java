@@ -1,9 +1,12 @@
 package com.grikly;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.core.MultivaluedMap;
+
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
@@ -487,6 +490,38 @@ public class Grikly{
 	
 	
 	/**
+	 * Sets a Default card for User
+	 * @author Mario Dennis
+	 * @param userId
+	 * @param cardId
+	 * @param response
+	 */
+	public void  setUserDefaultCard (int userId,int cardId,ResponseListener<Card> response)
+	{
+		if (userId <= 0 || cardId <= 0)
+			throw new IllegalArgumentException("Id must be greater than zero");
+		
+		if (response == null)
+			throw new NullPointerException("Null ResponseListener instance supplied");
+		StringBuffer url = new StringBuffer("Users/");
+		url.append(userId);
+		url.append("/DefaultCard?cardId=");
+		url.append(cardId);
+		
+		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		builder.setPath(url.toString());
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		Request<Card, Card> request = builder.buildHttpPost();
+		GriklyClient<Card, Card> client = new GriklyClient<Card, Card> (request,response);
+		client.execute();
+	}//end setUserDefaultCard method
+	
+	
+	
+	/**
 	 * Send Card Asynchronously.
 	 * @author Mario Dennis
 	 * @param cardId
@@ -662,6 +697,21 @@ public class Grikly{
 		return request.execute();
 	}//end updateContact method
 	
+	
+	public int uploadProfileImage (int userId,File file,String contentType)
+	{
+		if (file == null || contentType == null)
+			throw new NullPointerException("Null Argument Supplied");
+		
+		HttpBuilder<String, Integer> builder = new HttpBuilder<String, Integer>(Integer.class, getApiKey());
+		builder.setPath(String.format("Users/%d/ProfileImage", userId));
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		Request<String, Integer> request = builder.buildMultiPartRequest(file, contentType);
+		return request.execute();
+	}//end uploadProfileImage method
 	
 	
 	/**
