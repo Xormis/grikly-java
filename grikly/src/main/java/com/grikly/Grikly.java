@@ -496,7 +496,7 @@ public class Grikly{
 	 * @param cardId
 	 * @param response
 	 */
-	public void  setUserDefaultCard (int userId,int cardId,ResponseListener<Card> response)
+	public void  updateUserDefaultCard (int userId,int cardId,ResponseListener<Card> response)
 	{
 		if (userId <= 0 || cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than zero");
@@ -517,6 +517,34 @@ public class Grikly{
 		Request<Card, Card> request = builder.buildHttpPost();
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card> (request,response);
 		client.execute();
+	}//end setUserDefaultCard method
+	
+	
+	/**
+	 * Sets a Default card for User
+	 * @author Mario Dennis
+	 * @param userId
+	 * @param cardId
+	 * @param response
+	 */
+	public void updateUserDefaultCard(int userId,int cardId)
+	{
+		if (userId <= 0 || cardId <= 0)
+			throw new IllegalArgumentException("Id must be greater than zero");
+		
+		StringBuffer url = new StringBuffer("Users/");
+		url.append(userId);
+		url.append("/DefaultCard?cardId=");
+		url.append(cardId);
+		
+		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		builder.setPath(url.toString());
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		Request<Card, Card> request = builder.buildHttpPost();
+		request.execute();
 	}//end setUserDefaultCard method
 	
 	
