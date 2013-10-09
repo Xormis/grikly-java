@@ -198,11 +198,9 @@ public class Grikly{
 		if (email == null || response == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
-		queryMap.add("Email", email);
 		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean>(Boolean.class,getApiKey())
-													.setPath("Account/EmailExist")
-													.addQueryParam(queryMap);
+													.setPath(String.format("Account/EmailExist?Email=%s", email));
+							
 		//add authInfo if supplied 
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
@@ -223,12 +221,9 @@ public class Grikly{
 		if (email == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
-		queryMap.add("Email", email);
-		
+
 		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean> (Boolean.class,getApiKey());
-		builder.addQueryParam(queryMap);
-		builder.setPath("Account/EmailExist");
+		builder.setPath(String.format("Account/EmailExist?Email=%s", email));
 		
 		//add authInfo if supplied 
 		if (isAuthed())
