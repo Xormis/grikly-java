@@ -581,14 +581,14 @@ public class Grikly{
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be greater than 0");
 		
-		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
-		queryMap.add("searchText", searchString);
-		queryMap.add("page", new Integer(1).toString());
+		StringBuffer queryParm = new StringBuffer("?searchText=");
+		queryParm.append(searchString);
+		queryParm.append("&page=");
+		queryParm.append(page);
 
 		@SuppressWarnings("unchecked")
 		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>((Class<ArrayList<Card>>) new ArrayList<Card>().getClass(), getApiKey());
-		builder.addQueryParam(queryMap);
-		builder.setPath("Contacts");
+		builder.setPath(String.format("Contacts%s", queryParm));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
@@ -606,14 +606,14 @@ public class Grikly{
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be greater than 0");
 		
-		MultivaluedMap<String, String> queryMap = new MultivaluedMapImpl();
-		queryMap.add("searchText", searchString);
-		queryMap.add("page", new Integer(1).toString());
+		StringBuffer queryParm = new StringBuffer("?searchText=");
+		queryParm.append(searchString);
+		queryParm.append("&page=");
+		queryParm.append(page);
 
 		@SuppressWarnings("unchecked")
 		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>((Class<ArrayList<Card>>) new ArrayList<Card>().getClass(), getApiKey());
-		builder.addQueryParam(queryMap);
-		builder.setPath("Contacts");
+		builder.setPath(String.format("Contacts%s", queryParm));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
