@@ -14,6 +14,8 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.grikly.URL;
+import com.grikly.exception.NotFoundException;
+import com.grikly.exception.UnauthorizedException;
 
 /**
  * HttpPostRequest is used to execute a HTTP
@@ -82,6 +84,11 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 				if (result != null)
 					return gson.fromJson(result, getType());
 			}
+			if (response.getStatusLine().getStatusCode() == 401)
+				throw new UnauthorizedException ();
+			
+			if (response.getStatusLine().getStatusCode() == 404)
+				throw new NotFoundException();
 		} 
 		catch (ClientProtocolException e) 
 		{

@@ -1,14 +1,18 @@
 package com.grikly.request;
 
 import java.io.IOException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
 import com.google.gson.Gson;
 import com.grikly.URL;
+import com.grikly.exception.NotFoundException;
+import com.grikly.exception.UnauthorizedException;
 
 /**
  * HttpGetRequest is used to execute a HTTP
@@ -54,13 +58,17 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 		try 
 		{
 			HttpResponse response = client.execute(get);
-
 			if (response.getStatusLine().getStatusCode() == 200 )
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				if (entity != null)
 					return new Gson().fromJson(entity, getType());
 			}
+			if (response.getStatusLine().getStatusCode() == 401)
+				throw new UnauthorizedException();
+			
+			if (response.getStatusLine().getStatusCode() == 404)
+				throw new NotFoundException();
 		} 
 		catch (ClientProtocolException e) 
 		{

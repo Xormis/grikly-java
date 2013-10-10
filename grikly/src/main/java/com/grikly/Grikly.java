@@ -5,8 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
@@ -16,7 +14,6 @@ import com.grikly.model.User;
 import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
 import com.sun.jersey.core.util.Base64;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class Grikly{
 
