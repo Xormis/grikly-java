@@ -99,7 +99,8 @@ public final class HttpBuilder<E,T> {
 	 */
 	public HttpBuilder<E, T> setAuthInfo (byte[] authInfo)
 	{
-		this.authInfo = new String(authInfo);
+		if (authInfo != null)
+			this.authInfo = new String(authInfo);
 		return this;
 	}//end setAuthInfo method
 	
