@@ -11,6 +11,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.grikly.URL;
+import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.NotFoundException;
 import com.grikly.exception.UnauthorizedException;
 
@@ -69,6 +70,9 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 			
 			if (response.getStatusLine().getStatusCode() == 404)
 				throw new NotFoundException();
+			
+			if (response.getStatusLine().getStatusCode() == 403)
+				throw new ForbiddenException();
 		} 
 		catch (ClientProtocolException e) 
 		{
