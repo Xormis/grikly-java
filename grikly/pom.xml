@@ -18,9 +18,10 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
     	<groupId>com.google.code.gson</groupId>
     	<artifactId>gson</artifactId>
@@ -36,10 +37,5 @@
     	<artifactId>httpclient</artifactId>
     	<version>4.2.5</version>
     </dependency>
-    <dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpmime</artifactId>
-		<version>4.0-alpha3</version>
-	</dependency>
   </dependencies>
 </project>
