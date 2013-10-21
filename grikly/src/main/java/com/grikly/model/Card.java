@@ -22,7 +22,7 @@ public class Card{
 	private String FacebookUrl;
 	private String Website;
 	private int ShareCount;
-	
+	private Contact Contact;
 	
 	
 	
@@ -387,6 +387,24 @@ public class Card{
 	}
 	
 	
+	/**
+	 * @return the contact
+	 */
+	public Contact getContact() 
+	{
+		return Contact;
+	}
+
+
+	/**
+	 * @param contact the contact to set
+	 */
+	public void setContact(Contact contact) 
+	{
+		this.Contact = contact;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

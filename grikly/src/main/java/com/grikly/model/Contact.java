@@ -117,7 +117,7 @@ public class Contact {
 	 */
 	public void setDateMet(Date dateMet)
 	{
-		DateMet = dateMet;
+	 //DateMet = dateMet;
 	}
 	
 	
