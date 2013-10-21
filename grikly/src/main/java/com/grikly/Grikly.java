@@ -1,6 +1,5 @@
 package com.grikly;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,7 @@ import com.grikly.model.NewUser;
 import com.grikly.model.SendCard;
 import com.grikly.model.User;
 import com.grikly.request.HttpBuilder;
+import com.grikly.request.HttpContactRequest;
 import com.grikly.request.Request;
 import com.sun.jersey.core.util.Base64;
 
@@ -603,21 +603,9 @@ public class Grikly{
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be greater than 0");
 		
-		StringBuffer queryParm = new StringBuffer("?searchText=");
-		queryParm.append(searchString);
-		queryParm.append("&page=");
-		queryParm.append(page);
-
-		@SuppressWarnings("unchecked")
-		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>((Class<ArrayList<Card>>) new ArrayList<Card>().getClass(), getApiKey());
-		builder.setPath(String.format("Contacts%s", queryParm));
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
-		Request<String, ArrayList<Card>> request = builder.buildHttpGet();
-		GriklyClient<String, ArrayList<Card>> client = new GriklyClient<String, ArrayList<Card>>(request, response);
-		client.execute();
+	
+		HttpContactRequest request = new HttpContactRequest(searchString, page,getApiKey(),authInfo, response);
+		request.execute();
 	}//end getContact method
 	
 	
@@ -717,7 +705,7 @@ public class Grikly{
 		return request.execute();
 	}//end updateContact method
 	
-	
+	/*
 	public int uploadProfileImage (int userId,File file,String contentType)
 	{
 		if (file == null || contentType == null)
@@ -753,4 +741,5 @@ public class Grikly{
 		Request<Contact, Contact> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteContact method
+	
 }//end  Grikly class
