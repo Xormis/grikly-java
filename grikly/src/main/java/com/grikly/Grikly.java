@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
@@ -115,7 +116,7 @@ public class Grikly{
 	 * @param userId
 	 * @return User
 	 */
-	public User getUser (int userId)
+	public User getUser (int userId) 
 	{
 		if (userId <= 0)
 			throw new IllegalArgumentException("User id must be greater than zero");
@@ -411,7 +412,7 @@ public class Grikly{
 	 * @param newUser
 	 * @return User
 	 */
-	public User register (NewUser newUser)
+	public User register (NewUser newUser) 
 	{
 		if (newUser == null)
 			throw new NullPointerException("Null Argument Supplied");
@@ -519,7 +520,7 @@ public class Grikly{
 	 * @param cardId
 	 * @param response
 	 */
-	public void updateUserDefaultCard(int userId,int cardId)
+	public void updateUserDefaultCard(int userId,int cardId) 
 	{
 		if (userId <= 0 || cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than zero");
@@ -548,7 +549,7 @@ public class Grikly{
 	 * @param model
 	 * @param response
 	 */
-	public void sendCard (int cardId,SendCard model,ResponseListener<Card> response)
+	public void sendCard (int cardId,SendCard model,ResponseListener<Card> response) 
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than 0");
@@ -605,17 +606,12 @@ public class Grikly{
 		
 		
 		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>(null, getApiKey());
-		builder.setPath("Contacts");
-		builder.setModel(searchString);
-		
-		if (authInfo != null)
+	
+		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
 		Request<String, ArrayList<Card>> request = builder.buildHttpContactRequest(searchString,page);
 	
-		/*
-		HttpContactRequest request = new HttpContactRequest(searchString, page,getApiKey(),authInfo, response);
-		*/
 		GriklyClient<String, ArrayList<Card>> client = new GriklyClient<String, ArrayList<Card>>(request, response);
 		client.execute();
 	}//end getContact method
@@ -654,7 +650,7 @@ public class Grikly{
 	 * @param contact
 	 * @return Contact
 	 */
-	public Contact createContact(Contact contact)
+	public Contact createContact(Contact contact) 
 	{
 		if (contact == null || contact == null)
 			throw new NullPointerException("Null argument supplied");
@@ -700,8 +696,9 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
+	 * @throws NotFoundException 
 	 */
-	public Contact updateContact (Contact contact)
+	public Contact updateContact (Contact contact) 
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
@@ -739,7 +736,7 @@ public class Grikly{
 	 * @param contactId
 	 * @return
 	 */
-	public Contact deleteContact (int contactId)
+	public Contact deleteContact (int contactId) 
 	{
 		if (contactId <= 0)
 			throw new IllegalArgumentException("contactId must be greater that zero");

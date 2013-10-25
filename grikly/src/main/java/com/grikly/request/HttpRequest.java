@@ -2,6 +2,7 @@ package com.grikly.request;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+
 /**
  * HttpRequest is a abstract class that contain
  * all properties that are need to do HTTP Request 

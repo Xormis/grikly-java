@@ -44,7 +44,7 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	public T execute() 
+	public T execute()
 	{
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
@@ -67,13 +67,13 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 											.fromJson(entity, getType());
 			}
 			if (response.getStatusLine().getStatusCode() == 401)
-				throw new UnauthorizedException();
+				throw new UnauthorizedException("Http: 401 " + EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException();
+				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
 	
 			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException();
+				throw new ForbiddenException("Http 403: " + EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) 
 		{

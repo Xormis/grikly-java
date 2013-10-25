@@ -1,5 +1,6 @@
 package com.grikly;
 
+import com.grikly.exception.NotFoundException;
 import com.grikly.request.Request;
 
 /**
@@ -39,10 +40,18 @@ public class GriklyClient <E,T>{
 		Runnable thread = new Runnable() 
 		{
 			
-			public void run() 
+			public void run()
 			{
-				T result = (T) request.execute ();	
-				response.response(result);
+				T result = null;
+				
+					try {
+						result = (T) request.execute ();
+						response.response(result);
+					} catch (NotFoundException e) {
+						e.printStackTrace();
+					}
+					
+					
 			}
 		};
 		new Thread(thread).start();

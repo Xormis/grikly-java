@@ -69,13 +69,13 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 				}
 			}
 			if (response.getStatusLine().getStatusCode() == 401)
-				throw new UnauthorizedException();
+				throw new UnauthorizedException("Http: 401 " + EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException();
+				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException();
+				throw new ForbiddenException("Http 403: " + EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) 
 		{

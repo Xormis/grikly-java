@@ -96,9 +96,12 @@ public final class HttpBuilder<E,T> {
 	public Request <String, ArrayList<Card>> buildHttpContactRequest (String searchQuery,int page)
 	{
 		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>(null, getApiKey());
-		builder.setAuthInfo(this.getAuthInfo().getBytes());
-		builder.setModel((String) this.getModel());
-		builder.setPath(this.getPath());
+		
+		if (this.getAuthInfo() != null)
+			builder.setAuthInfo(this.getAuthInfo().getBytes());
+		
+		if (this.getPath() != null)
+			builder.setPath(this.getPath());
 		
 		return new HttpContactRequest(searchQuery,page,builder);
 	}//end buildContactRequest method

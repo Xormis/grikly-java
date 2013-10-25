@@ -13,6 +13,8 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.grikly.URL;
+import com.grikly.exception.NotFoundException;
+import com.grikly.exception.UnauthorizedException;
 import com.grikly.model.Card;
 
 
@@ -28,13 +30,7 @@ public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 	
 	
 	public ArrayList<Card> execute() 
-	{	
-		if (getPath() == null)
-			throw new NullPointerException ("No Path supplied");
-		
-		if (getModel() == null)
-			throw new NullPointerException("No Model Supplied: Enter Query");
-		
+	{		
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(buildUrl(searchQuery,page));
 		
@@ -46,7 +42,6 @@ public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 		try 
 		{
 			HttpResponse response = client.execute(get);
-			System.err.println(response.getStatusLine());
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
@@ -55,6 +50,11 @@ public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 										.fromJson(entity,new TypeToken<ArrayList<Card>>(){}.getType());
 				return arrayList;
 			}
+			if (response.getStatusLine().getStatusCode() == 404)
+				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 401)
+				throw new UnauthorizedException("Http: 401 " + EntityUtils.toString(response.getEntity()));
 			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
