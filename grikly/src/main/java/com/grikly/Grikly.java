@@ -11,7 +11,6 @@ import com.grikly.model.NewUser;
 import com.grikly.model.SendCard;
 import com.grikly.model.User;
 import com.grikly.request.HttpBuilder;
-import com.grikly.request.HttpContactRequest;
 import com.grikly.request.Request;
 import com.sun.jersey.core.util.Base64;
 
@@ -107,6 +106,7 @@ public class Grikly{
 		GriklyClient<Integer, User> client = new GriklyClient<Integer, User>(request, response);
 		client.execute();
 	}//end fetchUser method
+	
 	
 	
 	/**
@@ -603,9 +603,21 @@ public class Grikly{
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be greater than 0");
 		
+		
+		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>(null, getApiKey());
+		builder.setPath("Contacts");
+		builder.setModel(searchString);
+		
+		if (authInfo != null)
+			builder.setAuthInfo(authInfo);
+		
+		Request<String, ArrayList<Card>> request = builder.buildHttpContactRequest(searchString,page);
 	
+		/*
 		HttpContactRequest request = new HttpContactRequest(searchString, page,getApiKey(),authInfo, response);
-		request.execute();
+		*/
+		GriklyClient<String, ArrayList<Card>> client = new GriklyClient<String, ArrayList<Card>>(request, response);
+		client.execute();
 	}//end getContact method
 	
 	
