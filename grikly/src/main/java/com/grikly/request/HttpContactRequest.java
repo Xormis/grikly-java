@@ -10,17 +10,75 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.grikly.ResponseListener;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.NotFoundException;
-import com.grikly.exception.UnauthorizedException;
+import com.grikly.URL;
 import com.grikly.model.Card;
 
-public class HttpContactRequest {
 
+public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
+	private final String searchQuery;
+	private final int page;
+	protected HttpContactRequest (String searchQuery, Integer page, HttpBuilder<String,ArrayList<Card>> builder)
+	{
+		super(builder);
+		this.searchQuery = searchQuery;
+		this.page = page;
+	}
+	
+	
+	public ArrayList<Card> execute() 
+	{	
+		if (getPath() == null)
+			throw new NullPointerException ("No Path supplied");
+		
+		if (getModel() == null)
+			throw new NullPointerException("No Model Supplied: Enter Query");
+		
+		HttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(buildUrl(searchQuery,page));
+		
+		get.addHeader("ApiKey", getApiKey());
+		
+		if (getAuthInfo() != null)
+			get.addHeader("Authorization","Basic " + getAuthInfo());
+		
+		try 
+		{
+			HttpResponse response = client.execute(get);
+			System.err.println(response.getStatusLine());
+			if (response.getStatusLine().getStatusCode() == 200)
+			{
+				String entity = EntityUtils.toString(response.getEntity());
+				ArrayList<Card>arrayList = new  GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss")
+										.create()
+										.fromJson(entity,new TypeToken<ArrayList<Card>>(){}.getType());
+				return arrayList;
+			}
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}	
+	
+	
+	private String buildUrl (String searchQuery,int page)
+	{
+		StringBuffer buffer = new StringBuffer(String.format(URL.BASE.toString(), "Contacts"));
+		buffer.append("?searchText=");
+		buffer.append(searchQuery);
+		buffer.append("&page=");
+		buffer.append(page);
+		return buffer.toString();
+	}
+	
+	
+/*
 	private final ResponseListener<ArrayList<Card>> response;
 	private final String searchString;
 	private final int page;
@@ -84,4 +142,6 @@ public class HttpContactRequest {
 	
 		new Thread(runnable).start();
 	}
+	
+	*/
 }

@@ -1,8 +1,10 @@
 package com.grikly.request;
 
-import java.io.File;
+import java.util.ArrayList;
 
 import javax.ws.rs.core.MultivaluedMap;
+
+import com.grikly.model.Card;
 
 /**
  * HttpBuilder class is used to set properties
@@ -85,10 +87,21 @@ public final class HttpBuilder<E,T> {
 	}//end buildHttpPut method
 	
 	
-	public Request<E,T> buildMultiPartRequest (File file,String contentType)
+	/**
+	 * Build HttpContactRequest object
+	 * @param searchQuery
+	 * @param page
+	 * @return
+	 */
+	public Request <String, ArrayList<Card>> buildHttpContactRequest (String searchQuery,int page)
 	{
-		return new MultiPartRequest<E, T>(this, file, contentType);
-	}//end buildMultiPartRequest method
+		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>(null, getApiKey());
+		builder.setAuthInfo(this.getAuthInfo().getBytes());
+		builder.setModel((String) this.getModel());
+		builder.setPath(this.getPath());
+		
+		return new HttpContactRequest(searchQuery,page,builder);
+	}//end buildContactRequest method
 	
 	
 	/**
