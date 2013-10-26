@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.grikly.URL;
 import com.grikly.exception.NotFoundException;
-import com.grikly.exception.UnauthorizedException;
 import com.grikly.model.Card;
 
 /**
@@ -71,9 +70,6 @@ public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 			}
 			if (response.getStatusLine().getStatusCode() == 404)
 				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 401)
-				throw new UnauthorizedException("Http: 401 " + EntityUtils.toString(response.getEntity()));
 			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

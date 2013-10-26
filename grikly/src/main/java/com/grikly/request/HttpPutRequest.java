@@ -18,7 +18,6 @@ import com.google.gson.GsonBuilder;
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.NotFoundException;
-import com.grikly.exception.UnauthorizedException;
 
 /**
  * HttpPutRequest is used to execute a HTTP
@@ -80,8 +79,6 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 					return new GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss").create()
 											.fromJson(json, getType());
 			}
-			if (response.getStatusLine().getStatusCode() == 401)
-				throw new UnauthorizedException("Http: 401 " + EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 404)
 				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
