@@ -15,7 +15,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.grikly.URL;
 
-public class HttpMultiPartRequest <E, T> extends HttpRequest<E, T> {
+public final class HttpMultiPartRequest <E, T> extends HttpRequest<E, T> {
 
 	public HttpMultiPartRequest(HttpBuilder<E, T> builder) 
 	{

@@ -5,7 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.codec.binary.Base64;
+
 import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
@@ -70,12 +72,10 @@ public class Grikly{
 		String credential = email + ":" + password;
 		try 
 		{
-			//DatatypeConverter.printBase
 			authInfo = Base64.encodeBase64(credential.getBytes("UTF-8"));
 		} 
 		catch (UnsupportedEncodingException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}//end addValidUserCredential method
@@ -187,8 +187,7 @@ public class Grikly{
 		return request.execute();
 	}//end getCard method
 	
-	
-	
+		
 	/**
 	 * Check if email exists Asynchronously.
 	 * @author Mario Dennis
@@ -332,6 +331,7 @@ public class Grikly{
 		Request<Card, Card> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteCard method
+	
 	
 	/**
 	 * Get a valid User by Email and Password Asynchronously..
@@ -564,6 +564,7 @@ public class Grikly{
 	}//end sendCard method
 	
 	
+	
 	/**
 	 * Get Contacts
 	 * @author Mario Dennis
@@ -728,12 +729,14 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param userId
 	 * @param file
-	 * @return String image url
 	 */
-	public String uploadProfileImage (int userId,File file) 
+	public void uploadProfileImage (int userId,File file,ResponseListener<String> response) 
 	{
 		if (file == null)
-			throw new NullPointerException("Null Argument Supplied");
+			throw new NullPointerException("Null File Argument Supplied");
+		
+		if (response == null)
+			throw new NullPointerException("Null ResponseListener Argument supplied");
 		
 		HttpBuilder<File,String> builder = new HttpBuilder<File, String>(String.class, getApiKey());
 		builder.setPath(String.format("Users/%d/ProfileImage", userId));
@@ -743,12 +746,14 @@ public class Grikly{
 			builder.setAuthInfo(authInfo);
 		
 		Request<File, String> request = builder.buildHttpMultiPartRequest();
-		return request.execute();
+		GriklyClient<File, String> client = new GriklyClient<File, String>(request, response);
+		
+		client.execute();
 	}//end uploadProfileImage method
 	
 	
 	/**
-	 * 
+	 * Delete card
 	 * @param contactId
 	 * @return
 	 */

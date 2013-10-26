@@ -26,7 +26,7 @@ import com.grikly.model.Card;
  * @param <String>
  * @param ArrayList<Card>
  */
-public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
+public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 	private final String searchQuery;
 	private final int page;
 	
