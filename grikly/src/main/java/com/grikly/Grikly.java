@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.commons.codec.binary.Base64;
 import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
 import com.grikly.model.Contact;
@@ -15,7 +15,6 @@ import com.grikly.model.SendCard;
 import com.grikly.model.User;
 import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
-import com.sun.jersey.core.util.Base64;
 
 public class Grikly{
 
@@ -71,7 +70,8 @@ public class Grikly{
 		String credential = email + ":" + password;
 		try 
 		{
-			authInfo = Base64.encode(credential.getBytes("UTF-8"));
+			//DatatypeConverter.printBase
+			authInfo = Base64.encodeBase64(credential.getBytes("UTF-8"));
 		} 
 		catch (UnsupportedEncodingException e)
 		{
