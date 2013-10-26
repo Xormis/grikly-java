@@ -1,6 +1,8 @@
 package com.grikly.request;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -17,23 +19,40 @@ import com.grikly.exception.NotFoundException;
 import com.grikly.exception.UnauthorizedException;
 import com.grikly.model.Card;
 
-
+/**
+ * HttpContactRequest is used to execute a HTTP
+ * Request to fetch Contacts.
+ * @author Mario Dennis
+ *
+ * @param <String>
+ * @param ArrayList<Card>
+ */
 public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 	private final String searchQuery;
 	private final int page;
+	
+	/**
+	 * HttpContactRequest Default Constructor.
+	 * @author Mario Dennis
+	 * @param HttpBuilder<E, T>
+	 */
 	protected HttpContactRequest (String searchQuery, Integer page, HttpBuilder<String,ArrayList<Card>> builder)
 	{
 		super(builder);
 		this.searchQuery = searchQuery;
 		this.page = page;
-	}
+	}//end constructor
 	
 	
+	/**
+	 * Executes HTTP Get Request to Grikly Server.
+	 * @author Mario Dennis
+	 * @return ArrayList<Card>
+	 */
 	public ArrayList<Card> execute() 
 	{		
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(buildUrl(searchQuery,page));
-		
 		get.addHeader("ApiKey", getApiKey());
 		
 		if (getAuthInfo() != null)
@@ -64,84 +83,23 @@ public class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
 			e.printStackTrace();
 		}
 		return null;
-	}	
+	}//end execute method	
 	
 	
-	private String buildUrl (String searchQuery,int page)
+	/*
+	 * construct URL needed for request
+	 */
+	private String buildUrl (String searchText,int page)
 	{
-		StringBuffer buffer = new StringBuffer(String.format(URL.BASE.toString(), "Contacts"));
-		buffer.append("?searchText=");
-		buffer.append(searchQuery);
-		buffer.append("&page=");
-		buffer.append(page);
-		return buffer.toString();
-	}
+		try {
+			searchText = URLEncoder.encode(searchText,"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		 StringBuffer buffer = new StringBuffer(String.format(URL.BASE.toString(), "Contacts"));
+         buffer.append(String.format("?searchText=%s&page=%d", searchText,page));
+         
+         return buffer.toString();
+	}//end buildUrl method
 	
-	
-/*
-	private final ResponseListener<ArrayList<Card>> response;
-	private final String searchString;
-	private final int page;
-	private final String apiKey;
-	private String authInfo;
-	
-	public HttpContactRequest (String searchString, int page,String apiKey,byte[] authInfo,ResponseListener<ArrayList<Card>> response)
-	{
-		this.response = response;
-		this.searchString = searchString;
-		this.apiKey = apiKey;
-		this.page = page;
-		
-		if (authInfo != null)
-			this.authInfo = new String(authInfo);
-	}
-	
-	public void execute ()
-	{
-		Runnable runnable = new Runnable() {
-			@SuppressWarnings("unchecked")
-			public void run() {
-
-				StringBuffer queryParm = new StringBuffer("?searchText=");
-				queryParm.append(searchString);
-				queryParm.append("&page=");
-				queryParm.append(page);
-				
-				HttpClient client = new DefaultHttpClient();
-				HttpGet get = new HttpGet(String.format("http://api.grik.ly/v1/Contacts%s", queryParm.toString()));	
-				get.addHeader("ApiKey", apiKey);
-				if (authInfo != null)
-					get.addHeader("Authorization","Basic " + authInfo);
-				try 
-				{
-					HttpResponse httpResponse = client.execute(get);
-					if (httpResponse.getStatusLine().getStatusCode() == 200)
-					{
-						
-						String result = EntityUtils.toString(httpResponse.getEntity());
-						Gson gson=  new GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss").create();
-						response.response((ArrayList<Card>) gson.fromJson(result,new TypeToken<ArrayList<Card>>(){}.getType()));
-					}
-					if (httpResponse.getStatusLine().getStatusCode() == 403)
-						throw new ForbiddenException();
-					
-					if (httpResponse.getStatusLine().getStatusCode() == 401)
-						throw new UnauthorizedException();
-					
-					if (httpResponse.getStatusLine().getStatusCode() == 404)
-						throw new NotFoundException();
-				} catch (ClientProtocolException e) 
-				{
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		};
-	
-		new Thread(runnable).start();
-	}
-	
-	*/
-}
+}//end HttpContactRequest class

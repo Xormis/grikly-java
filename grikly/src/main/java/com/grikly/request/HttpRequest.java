@@ -1,8 +1,5 @@
 package com.grikly.request;
 
-import javax.ws.rs.core.MultivaluedMap;
-
-
 /**
  * HttpRequest is a abstract class that contain
  * all properties that are need to do HTTP Request 
@@ -16,7 +13,6 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	private final String apiKey;
 	private final Class<T> type;
 	private final String path;
-	private final MultivaluedMap<String, String> queryMap; 
 	private final E model;
 	private final String authedInfo;
 	
@@ -30,7 +26,6 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 		this.apiKey = builder.getApiKey();
 		this.type = builder.getType();
 		this.path = builder.getPath();
-		this.queryMap = builder.getMap();
 		this.model = builder.getModel();
 		this.authedInfo = builder.getAuthInfo();
 	}//end constructor 
@@ -79,17 +74,6 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 		return path;
 	}//end getPath method
 	
-	
-
-	/**
-	 * Get queryMap
-	 * @author Mario Dennis
-	 * @return the queryMap
-	 */
-	public MultivaluedMap<String, String> getQueryMap() 
-	{
-		return queryMap;
-	}//end getQueryMap method
 
 
 	/**

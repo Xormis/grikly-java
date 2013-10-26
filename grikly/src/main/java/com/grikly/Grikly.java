@@ -1,6 +1,8 @@
 package com.grikly;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -496,13 +498,9 @@ public class Grikly{
 		
 		if (response == null)
 			throw new NullPointerException("Null ResponseListener instance supplied");
-		StringBuffer url = new StringBuffer("Users/");
-		url.append(userId);
-		url.append("/DefaultCard?cardId=");
-		url.append(cardId);
-		
+	
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
-		builder.setPath(url.toString());
+		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
@@ -525,13 +523,8 @@ public class Grikly{
 		if (userId <= 0 || cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than zero");
 		
-		StringBuffer url = new StringBuffer("Users/");
-		url.append(userId);
-		url.append("/DefaultCard?cardId=");
-		url.append(cardId);
-		
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
-		builder.setPath(url.toString());
+		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
@@ -571,6 +564,13 @@ public class Grikly{
 	}//end sendCard method
 	
 	
+	/**
+	 * Get Contacts
+	 * @author Mario Dennis
+	 * @param searchString
+	 * @param page
+	 * @return List<Contact>
+	 */
 	public List<Card> getContact (String searchString,int page)
 	{
 		if (searchString ==  null)
@@ -579,14 +579,16 @@ public class Grikly{
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be greater than 0");
 		
-		StringBuffer queryParm = new StringBuffer("?searchText=");
-		queryParm.append(searchString);
-		queryParm.append("&page=");
-		queryParm.append(page);
-
+		try {
+			searchString = URLEncoder.encode(searchString, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		@SuppressWarnings("unchecked")
 		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>((Class<ArrayList<Card>>) new ArrayList<Card>().getClass(), getApiKey());
-		builder.setPath(String.format("Contacts%s", queryParm));
+		builder.setPath(String.format("Contacts?searchText=%s&page=%d", searchString,page));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
@@ -596,6 +598,12 @@ public class Grikly{
 	}//end getContact method
 	
 	
+	/**
+	 * Get Contacts
+	 * @author Mario Dennis
+	 * @param searchString
+	 * @param page
+	 */
 	public void getContact (String searchString,int page,ResponseListener<ArrayList<Card>> response)
 	{
 		if (searchString ==  null)
@@ -714,19 +722,27 @@ public class Grikly{
 		return request.execute();
 	}//end updateContact method
 	
-	/*
-	public int uploadProfileImage (int userId,File file,String contentType)
+	
+	/**
+	 * Uploads user profile image.
+	 * @author Mario Dennis
+	 * @param userId
+	 * @param file
+	 * @return String image url
+	 */
+	public String uploadProfileImage (int userId,File file) 
 	{
-		if (file == null || contentType == null)
+		if (file == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		HttpBuilder<String, Integer> builder = new HttpBuilder<String, Integer>(Integer.class, getApiKey());
+		HttpBuilder<File,String> builder = new HttpBuilder<File, String>(String.class, getApiKey());
 		builder.setPath(String.format("Users/%d/ProfileImage", userId));
+		builder.setModel(file);
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<String, Integer> request = builder.buildMultiPartRequest(file, contentType);
+		Request<File, String> request = builder.buildHttpMultiPartRequest();
 		return request.execute();
 	}//end uploadProfileImage method
 	

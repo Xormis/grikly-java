@@ -1,9 +1,6 @@
 package com.grikly.request;
 
 import java.util.ArrayList;
-
-import javax.ws.rs.core.MultivaluedMap;
-
 import com.grikly.model.Card;
 
 /**
@@ -23,7 +20,6 @@ public final class HttpBuilder<E,T> {
 	private E model;
 	private String apiKey;
 	private Class<T> type;
-	private MultivaluedMap<String, String> queryMap;  
 	
 	
 	/**
@@ -87,6 +83,12 @@ public final class HttpBuilder<E,T> {
 	}//end buildHttpPut method
 	
 	
+	public Request<E, T> buildHttpMultiPartRequest ()
+	{
+		return new HttpMultiPartRequest <E,T>(this);
+	}//end 
+	
+	
 	/**
 	 * Build HttpContactRequest object
 	 * @param searchQuery
@@ -123,7 +125,8 @@ public final class HttpBuilder<E,T> {
 	
 	
 	/**
-	 * Set model attribute.
+	 * Set model attribute. This attribute 
+	 * is data being sent with request
 	 * @author Mario Dennis
 	 * @param model
 	 * @return HttpBuilder <E,T>
@@ -136,7 +139,8 @@ public final class HttpBuilder<E,T> {
 	
 	
 	/**
-	 * Set path attribute.
+	 * Set path attribute.[Note] path
+	 * must be relative to base URL.
 	 * @author Mario Dennis
 	 * @param path
 	 * @return HttpBuilder <E,T>
@@ -147,17 +151,6 @@ public final class HttpBuilder<E,T> {
 		return this;
 	}//end setPath method
 	
-
-	/**
-	 * Set queryMap attribute.
-	 * @param queryMap
-	 * @return HttpBuilder <E,T>
-	 */
-	public HttpBuilder<E, T> addQueryParam (MultivaluedMap<String, String> queryMap)
-	{
-		this.queryMap = queryMap;
-		return this;
-	}//end addQueryParam method 
 	
 	
 	/**
@@ -214,16 +207,5 @@ public final class HttpBuilder<E,T> {
 	{
 		return authInfo;
 	}///end getAuthInfo method
-	
-	
-	/**
-	 * Get queryMap
-	 * @author Mario Dennis
-	 * @return MultivaluedMap<String,String>
-	 */
-	protected MultivaluedMap<String,String> getMap ()
-	{
-		return queryMap;
-	}//end getMap method
 	
 }//end GriklyBuilder class

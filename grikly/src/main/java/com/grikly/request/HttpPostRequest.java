@@ -72,7 +72,6 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 			}
 			
 			HttpResponse response = client.execute(post);
-			System.out.println(response.getStatusLine());
 			if(response.getStatusLine().getStatusCode() == 200)
 			{
 				String result = EntityUtils.toString(response.getEntity());
