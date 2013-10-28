@@ -732,6 +732,9 @@ public class Grikly{
 	 */
 	public void uploadProfileImage (int userId,File file,ResponseListener<String> response) 
 	{
+		if (userId <= 0)
+			throw new IllegalArgumentException("User Id must be greater than 0");
+		
 		if (file == null)
 			throw new NullPointerException("Null File Argument Supplied");
 		
@@ -772,4 +775,29 @@ public class Grikly{
 		return request.execute();
 	}//end deleteContact method
 	
+	
+	/**
+	 * Delete card
+	 * @param contactId
+	 * @return
+	 */
+	public void deleteContact (int contactId,ResponseListener<Contact> response) 
+	{
+		if (contactId <= 0)
+			throw new IllegalArgumentException("contactId must be greater that zero");
+		
+		if (response == null)
+			throw new NullPointerException("Null ResponseListener supplied");
+		
+		
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		builder.setPath(String.format("Contacts/%d", contactId));
+		
+		if (isAuthed())
+			builder.setAuthInfo(authInfo);
+		
+		Request<Contact, Contact> request = builder.buildHttpDelete();
+		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		client.execute();
+	}//end deleteContact method
 }//end  Grikly class

@@ -15,6 +15,7 @@ public class Card{
 	private String CompanyAddress;
 	private double CompanyLatitude;
 	private double CompanyLongitude;
+	private String CompanyFax;
 	private String LogoUrl;
 	private String QrCodeUrl;
 	private String QrVCardUrl;
@@ -141,6 +142,22 @@ public class Card{
 	public void setCompanyLongitude(double companyLongitude) 
 	{
 		CompanyLongitude = companyLongitude;
+	}
+
+
+	/**
+	 * @return the companyFax
+	 */
+	public String getCompanyFax() {
+		return CompanyFax;
+	}
+
+
+	/**
+	 * @param companyFax the companyFax to set
+	 */
+	public void setCompanyFax(String companyFax) {
+		CompanyFax = companyFax;
 	}
 
 
@@ -404,25 +421,61 @@ public class Card{
 		this.Contact = contact;
 	}
 
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() 
-	{
-		return "Card [CardId=" + CardId + ", UserId=" + UserId + ", FirstName="
-				+ FirstName + ", LastName=" + LastName + ", WorkNumber="
-				+ WorkNumber + ", CellNumber=" + CellNumber + ", Email="
-				+ Email + ", Title=" + Title + ", UserProfileImageUrl="
-				+ UserProfileImageUrl + ", CompanyName=" + CompanyName
-				+ ", CompanyAddress=" + CompanyAddress + ", CompanyLatitude="
-				+ CompanyLatitude + ", CompanyLongitude=" + CompanyLongitude
-				+ ", LogoUrl=" + LogoUrl + ", QrCodeUrl=" + QrCodeUrl
-				+ ", QrVCardUrl=" + QrVCardUrl + ", VCardUrl=" + VCardUrl
-				+ ", FacebookUrl=" + FacebookUrl + ", Website=" + Website
-				+ ", ShareCount=" + ShareCount + "]";
-	}//end toString method
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Card [CardId=");
+		builder.append(CardId);
+		builder.append(", UserId=");
+		builder.append(UserId);
+		builder.append(", FirstName=");
+		builder.append(FirstName);
+		builder.append(", LastName=");
+		builder.append(LastName);
+		builder.append(", WorkNumber=");
+		builder.append(WorkNumber);
+		builder.append(", CellNumber=");
+		builder.append(CellNumber);
+		builder.append(", Email=");
+		builder.append(Email);
+		builder.append(", Title=");
+		builder.append(Title);
+		builder.append(", UserProfileImageUrl=");
+		builder.append(UserProfileImageUrl);
+		builder.append(", CompanyName=");
+		builder.append(CompanyName);
+		builder.append(", CompanyAddress=");
+		builder.append(CompanyAddress);
+		builder.append(", CompanyLatitude=");
+		builder.append(CompanyLatitude);
+		builder.append(", CompanyLongitude=");
+		builder.append(CompanyLongitude);
+		builder.append(", CompanyFax=");
+		builder.append(CompanyFax);
+		builder.append(", LogoUrl=");
+		builder.append(LogoUrl);
+		builder.append(", QrCodeUrl=");
+		builder.append(QrCodeUrl);
+		builder.append(", QrVCardUrl=");
+		builder.append(QrVCardUrl);
+		builder.append(", VCardUrl=");
+		builder.append(VCardUrl);
+		builder.append(", FacebookUrl=");
+		builder.append(FacebookUrl);
+		builder.append(", Website=");
+		builder.append(Website);
+		builder.append(", ShareCount=");
+		builder.append(ShareCount);
+		builder.append(", Contact=");
+		builder.append(Contact);
+		builder.append("]");
+		return builder.toString();
+	}
 
 	
 	
