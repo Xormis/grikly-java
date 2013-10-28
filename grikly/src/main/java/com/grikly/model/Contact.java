@@ -1,6 +1,5 @@
 package com.grikly.model;
 
-import java.util.Date;
 
 public class Contact {
 
@@ -9,7 +8,7 @@ public class Contact {
     private String PlaceMet;
     private double LatitudeMet;
     private double LongitudeMet;
-    private Date DateMet;
+    private String DateMet;
     private String Comment;
     
     
@@ -106,7 +105,7 @@ public class Contact {
 	/**
 	 * @return the dateMet
 	 */
-	public Date getDateMet()
+	public String getDateMet()
 	{
 		return DateMet;
 	}
@@ -115,9 +114,9 @@ public class Contact {
 	/**
 	 * @param dateMet the dateMet to set
 	 */
-	public void setDateMet(Date dateMet)
+	public void setDateMet(String dateMet)
 	{
-	 //DateMet = dateMet;
+		DateMet = dateMet;
 	}
 	
 	

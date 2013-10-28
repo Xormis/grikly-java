@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.NotFoundException;
@@ -64,7 +64,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 				{
 					String result = EntityUtils.toString(response.getEntity());
 					if (result != null)
-						return new GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss").create().fromJson(result, getType());
+						return new Gson().fromJson(result, getType());
 				}
 			}
 			

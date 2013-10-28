@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.NotFoundException;
@@ -62,8 +62,7 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				if (entity != null)
-					return new GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss").create()
-											.fromJson(entity, getType());
+					return new Gson().fromJson(entity, getType());
 			}
 			
 			if (response.getStatusLine().getStatusCode() == 404)

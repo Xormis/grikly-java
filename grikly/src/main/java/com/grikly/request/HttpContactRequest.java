@@ -12,7 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.grikly.URL;
 import com.grikly.exception.NotFoundException;
@@ -63,9 +63,7 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
-				ArrayList<Card>arrayList = new  GsonBuilder().setDateFormat("yyyy-mm-dd'T'HH:mm:ss")
-										.create()
-										.fromJson(entity,new TypeToken<ArrayList<Card>>(){}.getType());
+				ArrayList<Card>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Card>>(){}.getType());
 				return arrayList;
 			}
 			if (response.getStatusLine().getStatusCode() == 404)
