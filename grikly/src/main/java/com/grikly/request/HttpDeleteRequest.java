@@ -9,7 +9,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.Gson;
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.NotFoundException;
@@ -42,6 +41,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
+	@SuppressWarnings("unchecked")
 	public T execute()
 	{
 		if (getPath() == null)
@@ -59,15 +59,8 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 			HttpResponse response = client.execute(delete);
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
-				
-				if (response.containsHeader("Content-type: application/json; charset=utf-8"))
-				{
-					String result = EntityUtils.toString(response.getEntity());
-					if (result != null)
-						return new Gson().fromJson(result, getType());
-				}
-			}
-			
+				return (T) "Success";
+			}			
 			if (response.getStatusLine().getStatusCode() == 404)
 				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
 			

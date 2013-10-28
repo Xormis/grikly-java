@@ -761,20 +761,20 @@ public class Grikly{
 	/**
 	 * Delete card
 	 * @param contactId
-	 * @return
+	 * @return 
 	 */
-	public Contact deleteContact (int contactId) 
+	public String deleteContact (int contactId) 
 	{
 		if (contactId <= 0)
 			throw new IllegalArgumentException("contactId must be greater that zero");
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpDelete();
+		Request<Contact, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteContact method
 	
@@ -784,7 +784,7 @@ public class Grikly{
 	 * @param contactId
 	 * @return
 	 */
-	public void deleteContact (int contactId,ResponseListener<Contact> response) 
+	public void deleteContact (int contactId,ResponseListener<String> response) 
 	{
 		if (contactId <= 0)
 			throw new IllegalArgumentException("contactId must be greater that zero");
@@ -793,14 +793,14 @@ public class Grikly{
 			throw new NullPointerException("Null ResponseListener supplied");
 		
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpDelete();
-		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		Request<Contact, String> request = builder.buildHttpDelete();
+		GriklyClient<Contact, String> client = new GriklyClient<Contact, String>(request, response);
 		client.execute();
 	}//end deleteContact method
 	
