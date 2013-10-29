@@ -18,7 +18,7 @@ import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.InternalServerErrorException;
 import com.grikly.exception.NotFoundException;
-import com.grikly.model.Card;
+import com.grikly.model.Contact;
 
 /**
  * HttpContactRequest is used to execute a HTTP
@@ -28,20 +28,16 @@ import com.grikly.model.Card;
  * @param <String>
  * @param ArrayList<Card>
  */
-public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card>> {
-	private final String searchQuery;
-	private final int page;
+public final class HttpContactRequest extends HttpRequest<String, ArrayList<Contact>> {
 	
 	/**
 	 * HttpContactRequest Default Constructor.
 	 * @author Mario Dennis
 	 * @param HttpBuilder<E, T>
 	 */
-	protected HttpContactRequest (String searchQuery, Integer page, HttpBuilder<String,ArrayList<Card>> builder)
+	protected HttpContactRequest (HttpBuilder<String,ArrayList<Contact>> builder)
 	{
 		super(builder);
-		this.searchQuery = searchQuery;
-		this.page = page;
 	}//end constructor
 	
 	
@@ -50,10 +46,10 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 	 * @author Mario Dennis
 	 * @return ArrayList<Card>
 	 */
-	public ArrayList<Card> execute() 
+	public ArrayList<Contact> execute() 
 	{		
 		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet(buildUrl(searchQuery,page));
+		HttpGet get = new HttpGet(String.format(URL.BASE.toString(), "Contacts"));
 		get.addHeader("ApiKey", getApiKey());
 		
 		if (getAuthInfo() != null)
@@ -65,7 +61,7 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
-				ArrayList<Card>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Card>>(){}.getType());
+				ArrayList<Contact>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Contact>>(){}.getType());
 				return arrayList;
 			}
 			if (response.getStatusLine().getStatusCode() == 404)
@@ -78,10 +74,8 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 				throw new InternalServerErrorException("Http 400: " + EntityUtils.toString(response.getEntity()));
 			
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -101,7 +95,8 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 		 StringBuffer buffer = new StringBuffer(String.format(URL.BASE.toString(), "Contacts"));
          buffer.append(String.format("?searchText=%s&page=%d", searchText,page));
          
-         return buffer.toString();
+        // return buffer.toString();
+         return String.format(URL.BASE.toString(), "Contacts");
 	}//end buildUrl method
 	
 }//end HttpContactRequest class

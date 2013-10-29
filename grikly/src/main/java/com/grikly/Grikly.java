@@ -575,29 +575,14 @@ public class Grikly{
 	 * @param page
 	 * @return List<Contact>
 	 */
-	public List<Card> getContact (String searchString,int page)
+	public List<Contact> getContact ()
 	{
-		if (searchString ==  null)
-			throw new NullPointerException("Null argument supplied");
-		
-		if (page <= 0)
-			throw new IllegalArgumentException("page must be greater than 0");
-		
-		try {
-			searchString = URLEncoder.encode(searchString, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		@SuppressWarnings("unchecked")
-		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>((Class<ArrayList<Card>>) new ArrayList<Card>().getClass(), getApiKey());
-		builder.setPath(String.format("Contacts?searchText=%s&page=%d", searchString,page));
+		HttpBuilder<String, ArrayList<Contact>> builder = new HttpBuilder<String, ArrayList<Contact>>(null, getApiKey());
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<String, ArrayList<Card>> request = builder.buildHttpGet();
+		Request<String, ArrayList<Contact>> request = builder.buildHttpContactRequest();
 		return request.execute();
 	}//end getContact method
 	
@@ -608,23 +593,16 @@ public class Grikly{
 	 * @param searchString
 	 * @param page
 	 */
-	public void getContact (String searchString,int page,ResponseListener<ArrayList<Card>> response)
+	public void getContact (ResponseListener<ArrayList<Contact>> response)
 	{
-		if (searchString ==  null)
-			throw new NullPointerException("Null argument supplied");
-		
-		if (page <= 0)
-			throw new IllegalArgumentException("page must be greater than 0");
-		
-		
-		HttpBuilder<String, ArrayList<Card>> builder = new HttpBuilder<String, ArrayList<Card>>(null, getApiKey());
+		HttpBuilder<String, ArrayList<Contact>> builder = new HttpBuilder<String, ArrayList<Contact>>(null, getApiKey());
 	
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<String, ArrayList<Card>> request = builder.buildHttpContactRequest(searchString,page);
+		Request<String, ArrayList<Contact>> request = builder.buildHttpContactRequest();
 	
-		GriklyClient<String, ArrayList<Card>> client = new GriklyClient<String, ArrayList<Card>>(request, response);
+		GriklyClient<String, ArrayList<Contact>> client = new GriklyClient<String, ArrayList<Contact>>(request, response);
 		client.execute();
 	}//end getContact method
 	

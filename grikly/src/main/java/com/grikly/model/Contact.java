@@ -2,7 +2,6 @@ package com.grikly.model;
 
 
 public class Contact {
-
 	private int CardId;
 	private String EventMet;
     private String PlaceMet;
@@ -10,8 +9,111 @@ public class Contact {
     private double LongitudeMet;
     private String DateMet;
     private String Comment;
+    public String UserProfileImageUri;
+    public int UserId;
+    public String FirstName;
     
     
+    /**
+	 * @return the userProfileImageUri
+	 */
+	public String getUserProfileImageUri() {
+		return UserProfileImageUri;
+	}
+
+
+	/**
+	 * @param userProfileImageUri the userProfileImageUri to set
+	 */
+	public void setUserProfileImageUri(String userProfileImageUri) {
+		UserProfileImageUri = userProfileImageUri;
+	}
+
+
+	/**
+	 * @return the userId
+	 */
+	public int getUserId() {
+		return UserId;
+	}
+
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(int userId) {
+		UserId = userId;
+	}
+
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return FirstName;
+	}
+
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		FirstName = firstName;
+	}
+
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return LastName;
+	}
+
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		LastName = lastName;
+	}
+
+
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return Title;
+	}
+
+
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		Title = title;
+	}
+
+
+	/**
+	 * @return the companyName
+	 */
+	public String getCompanyName() {
+		return CompanyName;
+	}
+
+
+	/**
+	 * @param companyName the companyName to set
+	 */
+	public void setCompanyName(String companyName) {
+		CompanyName = companyName;
+	}
+
+
+	public String LastName;
+    public String Title;
+    public String CompanyName;
+
 	/**
 	 * @return the cardId
 	 */
@@ -146,7 +248,10 @@ public class Contact {
 		return "Contact [CardId=" + CardId + ", EventMet=" + EventMet
 				+ ", PlaceMet=" + PlaceMet + ", LatitudeMet=" + LatitudeMet
 				+ ", LongitudeMet=" + LongitudeMet + ", DateMet=" + DateMet
-				+ ", Comment=" + Comment + "]";
+				+ ", Comment=" + Comment + ", UserProfileImageUri="
+				+ UserProfileImageUri + ", UserId=" + UserId + ", FirstName="
+				+ FirstName + ", LastName=" + LastName + ", Title=" + Title
+				+ ", CompanyName=" + CompanyName + "]";
 	}
     
     
