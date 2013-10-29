@@ -16,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
+import com.grikly.exception.InternalServerErrorException;
 import com.grikly.exception.NotFoundException;
 
 /**
@@ -79,10 +80,13 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 			}
 			
 			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
+				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException("Http 403: " + EntityUtils.toString(response.getEntity()));
+				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 500)
+				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
 		}
 		catch (UnsupportedEncodingException e)
 		{

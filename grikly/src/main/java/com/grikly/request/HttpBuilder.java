@@ -1,6 +1,7 @@
 package com.grikly.request;
 
 import java.util.ArrayList;
+
 import com.grikly.model.Card;
 
 /**
@@ -47,7 +48,6 @@ public final class HttpBuilder<E,T> {
 	}//end buildHttpGet method
 	
 	
-	
 	/**
 	 * Builds HttpPostRequest object.
 	 * @author Mario Dennis
@@ -65,9 +65,10 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return HttpDeleteRequest<E,T>
 	 */
-	public Request<E, T> buildHttpDelete ()
+	@SuppressWarnings("unchecked")
+	public HttpDeleteRequest<E,String> buildHttpDelete ()
 	{
-		return new HttpDeleteRequest<E, T>(this);
+		return new HttpDeleteRequest<E,String>((HttpBuilder<E, String>) this);
 	}//end buildHttpDelete method
 	
 	

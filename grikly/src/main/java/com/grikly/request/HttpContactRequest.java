@@ -15,6 +15,8 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.grikly.URL;
+import com.grikly.exception.ForbiddenException;
+import com.grikly.exception.InternalServerErrorException;
 import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
 
@@ -68,6 +70,12 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Card
 			}
 			if (response.getStatusLine().getStatusCode() == 404)
 				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 500)
+				throw new ForbiddenException("Http 400: " + EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 500)
+				throw new InternalServerErrorException("Http 400: " + EntityUtils.toString(response.getEntity()));
 			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

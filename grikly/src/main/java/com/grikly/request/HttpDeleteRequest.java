@@ -11,6 +11,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
+import com.grikly.exception.InternalServerErrorException;
 import com.grikly.exception.NotFoundException;
 
 /**
@@ -22,7 +23,7 @@ import com.grikly.exception.NotFoundException;
  * @param <E>
  * @param <T>
  */
-public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
+public final class HttpDeleteRequest <E,T> extends HttpRequest<E, String> {
 
 
 	/**
@@ -30,7 +31,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @param HttpBuilder<E, T>
 	 */
-	protected HttpDeleteRequest (HttpBuilder<E, T> builder)
+	protected HttpDeleteRequest (HttpBuilder<E, String> builder)
 	{
 		super(builder);
 	}//end constructor 
@@ -41,8 +42,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	@SuppressWarnings("unchecked")
-	public T execute()
+	public String execute()
 	{
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
@@ -53,19 +53,20 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 		delete.addHeader("ApiKey",getApiKey());
 		if (getAuthInfo() != null)
 			delete.addHeader("Authorization","Basic " + getAuthInfo());
-		
 		try 
 		{
 			HttpResponse response = client.execute(delete);
 			if (response.getStatusLine().getStatusCode() == 200)
-			{
-				return (T) "Success";
-			}			
+				return  "Success";
+						
 			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
+				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException("Http 403: " + EntityUtils.toString(response.getEntity()));
+				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 500)
+				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) 
 		{
@@ -77,7 +78,7 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, T> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return  "Fail";
 	}//end execute method
 
 }//end HttpDeleteRequest class
