@@ -16,7 +16,7 @@ import com.grikly.model.Card;
 import com.grikly.model.Contact;
 import com.grikly.model.LoginModel;
 import com.grikly.model.NewUser;
-import com.grikly.model.SendCard;
+import com.grikly.model.SendCardModel;
 import com.grikly.model.User;
 import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
@@ -293,7 +293,7 @@ public class Grikly{
 	 * @param cardId
 	 * @param response
 	 */
-	public void deleteCard (int cardId, ResponseListener<Card> response)
+	public void deleteCard (int cardId, ResponseListener<String> response)
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Card Id must be greater than 0");
@@ -301,15 +301,15 @@ public class Grikly{
 		if (response == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		HttpBuilder<Card, Card> builder  = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		HttpBuilder<Card, String> builder  = new HttpBuilder<Card, String>(String.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
 		//add authInfo if supplied 
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Card, Card> request = builder.buildHttpDelete();
-		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response);
+		Request<Card, String> request = builder.buildHttpDelete();
+		GriklyClient<Card,String> client = new GriklyClient<Card,String>(request, response);
 		client.execute();
 	}//end deleteCard method 
 	
@@ -319,19 +319,19 @@ public class Grikly{
 	 * authorize action.
 	 * @param cardId
 	 */
-	public Card deleteCard (int cardId)
+	public String deleteCard (int cardId)
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Card Id must be greater than 0");
 		
-		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
+		HttpBuilder<Card, String> builder = new HttpBuilder<Card, String>(String.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
 		//add authInfo if supplied 
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Card, Card> request = builder.buildHttpDelete();
+		Request<Card, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteCard method
 	
@@ -545,7 +545,7 @@ public class Grikly{
 	 * @param model
 	 * @param response
 	 */
-	public void sendCard (int cardId,SendCard model,ResponseListener<Card> response) 
+	public void sendCard (int cardId,SendCardModel model,ResponseListener<Card> response) 
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than 0");
@@ -553,16 +553,16 @@ public class Grikly{
 		if ( model == null || response == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		HttpBuilder<SendCard, Card> builder = new HttpBuilder<SendCard, Card>(Card.class, getApiKey());
+		HttpBuilder<SendCardModel, Card> builder = new HttpBuilder<SendCardModel, Card>(Card.class, getApiKey());
 		builder.setModel(model);
-		builder.setPath(String.format("Card/%d/",cardId));
+		builder.setPath(String.format("Cards/%d/",cardId));
 		
 		//add authInfo if supplied
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<SendCard, Card> request = builder.buildHttpDelete();
-		GriklyClient<SendCard, Card> client = new GriklyClient<SendCard, Card>(request, response);
+		Request<SendCardModel, Card> request = builder.buildHttpPost();
+		GriklyClient<SendCardModel, Card> client = new GriklyClient<SendCardModel, Card>(request, response);
 		client.execute();
 	}//end sendCard method
 	
