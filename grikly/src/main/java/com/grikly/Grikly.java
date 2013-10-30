@@ -2,14 +2,10 @@ package com.grikly;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
@@ -782,11 +778,11 @@ public class Grikly{
 		client.execute();
 	}//end deleteContact method
 	
-	
+	/*
 	public static LocalDate convertToDate (String date)
 	{
 		DateTimeFormatter parser = ISODateTimeFormat.dateTimeNoMillis();
 		return parser.parseLocalDate(date+"Z");
 	}//end method
-	
+	*/
 }//end  Grikly class

@@ -49,7 +49,7 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Cont
 	public ArrayList<Contact> execute() 
 	{		
 		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet(String.format(URL.BASE.toString(), "Contacts"));
+		HttpGet get = new HttpGet(String.format(URL.BASE.toString(), "Contacts/All"));
 		get.addHeader("ApiKey", getApiKey());
 		
 		if (getAuthInfo() != null)
