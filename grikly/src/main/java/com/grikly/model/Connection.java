@@ -1,7 +1,7 @@
 package com.grikly.model;
 
 
-public class Contact {
+public class Connection {
 	private int CardId;
 	public int UserId;
     public String UserProfileImageUri;
@@ -95,7 +95,7 @@ public class Contact {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Contact [CardId=").append(CardId).append(", UserId=")
+		builder.append("Connection [CardId=").append(CardId).append(", UserId=")
 				.append(UserId).append(", UserProfileImageUri=")
 				.append(UserProfileImageUri).append(", FirstName=")
 				.append(FirstName).append(", LastName=").append(LastName)
@@ -104,4 +104,4 @@ public class Contact {
 	}
     
     
-}//end Contact class
+}//end Connection class
