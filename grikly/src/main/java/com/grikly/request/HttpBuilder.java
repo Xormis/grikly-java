@@ -2,7 +2,7 @@ package com.grikly.request;
 
 import java.util.ArrayList;
 
-import com.grikly.model.Contact;
+import com.grikly.model.Connection;
 
 /**
  * HttpBuilder class is used to set properties
@@ -96,9 +96,9 @@ public final class HttpBuilder<E,T> {
 	 * @param page
 	 * @return
 	 */
-	public Request <String, ArrayList<Contact>> buildHttpContactRequest ()
+	public Request <String, ArrayList<Connection>> buildHttpContactRequest ()
 	{
-		HttpBuilder<String, ArrayList<Contact>> builder = new HttpBuilder<String, ArrayList<Contact>>(null, getApiKey());
+		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
 		
 		if (this.getAuthInfo() != null)
 			builder.setAuthInfo(this.getAuthInfo().getBytes());

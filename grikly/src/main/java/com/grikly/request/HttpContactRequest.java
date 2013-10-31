@@ -18,7 +18,7 @@ import com.grikly.URL;
 import com.grikly.exception.ForbiddenException;
 import com.grikly.exception.InternalServerErrorException;
 import com.grikly.exception.NotFoundException;
-import com.grikly.model.Contact;
+import com.grikly.model.Connection;
 
 /**
  * HttpContactRequest is used to execute a HTTP
@@ -28,14 +28,14 @@ import com.grikly.model.Contact;
  * @param <String>
  * @param ArrayList<Card>
  */
-public final class HttpContactRequest extends HttpRequest<String, ArrayList<Contact>> {
+public final class HttpContactRequest extends HttpRequest<String, ArrayList<Connection>> {
 	
 	/**
 	 * HttpContactRequest Default Constructor.
 	 * @author Mario Dennis
 	 * @param HttpBuilder<E, T>
 	 */
-	protected HttpContactRequest (HttpBuilder<String,ArrayList<Contact>> builder)
+	protected HttpContactRequest (HttpBuilder<String,ArrayList<Connection>> builder)
 	{
 		super(builder);
 	}//end constructor
@@ -46,7 +46,7 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Cont
 	 * @author Mario Dennis
 	 * @return ArrayList<Card>
 	 */
-	public ArrayList<Contact> execute() 
+	public ArrayList<Connection> execute() 
 	{		
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(String.format(URL.BASE.toString(), "Contacts/All"));
@@ -61,7 +61,7 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Cont
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
-				ArrayList<Contact>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Contact>>(){}.getType());
+				ArrayList<Connection>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Connection>>(){}.getType());
 				return arrayList;
 			}
 			if (response.getStatusLine().getStatusCode() == 404)

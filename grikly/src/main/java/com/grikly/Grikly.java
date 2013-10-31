@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.grikly.exception.NotFoundException;
 import com.grikly.model.Card;
-import com.grikly.model.Contact;
+import com.grikly.model.Connection;
 import com.grikly.model.LoginModel;
 import com.grikly.model.NewUser;
 import com.grikly.model.SendCardModel;
@@ -565,40 +568,40 @@ public class Grikly{
 	
 	
 	/**
-	 * Get Contacts
+	 * Get Connection
 	 * @author Mario Dennis
 	 * @param searchString
 	 * @param page
 	 * @return List<Contact>
 	 */
-	public List<Contact> getContact ()
+	public List<Connection> getConnection ()
 	{
-		HttpBuilder<String, ArrayList<Contact>> builder = new HttpBuilder<String, ArrayList<Contact>>(null, getApiKey());
+		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<String, ArrayList<Contact>> request = builder.buildHttpContactRequest();
+		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
 		return request.execute();
 	}//end getContact method
 	
 	
 	/**
-	 * Get Contacts
+	 * Get Connection
 	 * @author Mario Dennis
 	 * @param searchString
 	 * @param page
 	 */
-	public void getContact (ResponseListener<ArrayList<Contact>> response)
+	public void getConnection(ResponseListener<ArrayList<Connection>> response)
 	{
-		HttpBuilder<String, ArrayList<Contact>> builder = new HttpBuilder<String, ArrayList<Contact>>(null, getApiKey());
+		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
 	
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<String, ArrayList<Contact>> request = builder.buildHttpContactRequest();
+		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
 	
-		GriklyClient<String, ArrayList<Contact>> client = new GriklyClient<String, ArrayList<Contact>>(request, response);
+		GriklyClient<String, ArrayList<Connection>> client = new GriklyClient<String, ArrayList<Connection>>(request, response);
 		client.execute();
 	}//end getContact method
 	
@@ -611,20 +614,20 @@ public class Grikly{
 	 * @param contact
 	 * @return Contact
 	 */
-	public void createContact(Contact contact,ResponseListener<Contact> response)
+	public void createContact(Connection contact,ResponseListener<Connection> response)
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
+		HttpBuilder<Connection, Connection> builder = new HttpBuilder<Connection, Connection>(Connection.class, getApiKey()); 
 		builder.setPath("Contacts");
 		builder.setModel(contact);
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpPost();
-		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		Request<Connection, Connection> request = builder.buildHttpPost();
+		GriklyClient<Connection, Connection> client = new GriklyClient<Connection, Connection>(request, response);
 		client.execute();
 	}//end createContact method 
 	
@@ -636,19 +639,19 @@ public class Grikly{
 	 * @param contact
 	 * @return Contact
 	 */
-	public Contact createContact(Contact contact) 
+	public Connection createContact(Connection contact) 
 	{
 		if (contact == null || contact == null)
 			throw new NullPointerException("Null argument supplied");
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
+		HttpBuilder<Connection, Connection> builder = new HttpBuilder<Connection, Connection>(Connection.class, getApiKey()); 
 		builder.setPath("Contacts");
 		builder.setModel(contact);
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpPost();
+		Request<Connection, Connection> request = builder.buildHttpPost();
 		return request.execute();
 	}//end createContact method 
 	
@@ -659,20 +662,20 @@ public class Grikly{
 	 * @param contact
 	 * @return Contact
 	 */
-	public void updateContact (Contact contact,ResponseListener<Contact> response)
+	public void updateContact (Connection contact,ResponseListener<Connection> response)
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		HttpBuilder<Connection, Connection> builder = new HttpBuilder<Connection, Connection>(Connection.class, getApiKey());
 		builder.setModel(contact);
 		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpPut();
-		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
+		Request<Connection, Connection> request = builder.buildHttpPut();
+		GriklyClient<Connection, Connection> client = new GriklyClient<Connection, Connection>(request, response);
 		client.execute();
 	}//end updateContact method
 	
@@ -684,19 +687,19 @@ public class Grikly{
 	 * @return Contact
 	 * @throws NotFoundException 
 	 */
-	public Contact updateContact (Contact contact) 
+	public Connection updateContact (Connection contact) 
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
 		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		HttpBuilder<Connection, Connection> builder = new HttpBuilder<Connection, Connection>(Connection.class, getApiKey());
 		builder.setModel(contact);
 		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, Contact> request = builder.buildHttpPut();
+		Request<Connection, Connection> request = builder.buildHttpPut();
 		return request.execute();
 	}//end updateContact method
 	
@@ -742,13 +745,13 @@ public class Grikly{
 		if (contactId <= 0)
 			throw new IllegalArgumentException("contactId must be greater that zero");
 		
-		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
+		HttpBuilder<Connection, String> builder = new HttpBuilder<Connection, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, String> request = builder.buildHttpDelete();
+		Request<Connection, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteContact method
 	
@@ -767,22 +770,22 @@ public class Grikly{
 			throw new NullPointerException("Null ResponseListener supplied");
 		
 		
-		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
+		HttpBuilder<Connection, String> builder = new HttpBuilder<Connection, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
 		
 		if (isAuthed())
 			builder.setAuthInfo(authInfo);
 		
-		Request<Contact, String> request = builder.buildHttpDelete();
-		GriklyClient<Contact, String> client = new GriklyClient<Contact, String>(request, response);
+		Request<Connection, String> request = builder.buildHttpDelete();
+		GriklyClient<Connection, String> client = new GriklyClient<Connection, String>(request, response);
 		client.execute();
 	}//end deleteContact method
 	
-	/*
+	
 	public static LocalDate convertToDate (String date)
 	{
 		DateTimeFormatter parser = ISODateTimeFormat.dateTimeNoMillis();
 		return parser.parseLocalDate(date+"Z");
 	}//end method
-	*/
+	
 }//end  Grikly class
