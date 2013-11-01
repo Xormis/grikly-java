@@ -5,7 +5,7 @@ public class Connection {
 	private int CardId;
 	public int UserId;
     public String UserProfileImageUri;
-    public String FirstName,LastName;
+    public String FirstName,LastName,EventMet,DateMet;
     
     
     /**
@@ -13,6 +13,38 @@ public class Connection {
 	 */
 	public String getUserProfileImageUri() {
 		return UserProfileImageUri;
+	}
+
+
+	/**
+	 * @return the eventMet
+	 */
+	public String getEventMet() {
+		return EventMet;
+	}
+
+
+	/**
+	 * @param eventMet the eventMet to set
+	 */
+	public void setEventMet(String eventMet) {
+		EventMet = eventMet;
+	}
+
+
+	/**
+	 * @return the dateMet
+	 */
+	public String getDateMet() {
+		return DateMet;
+	}
+
+
+	/**
+	 * @param dateMet the dateMet to set
+	 */
+	public void setDateMet(String dateMet) {
+		DateMet = dateMet;
 	}
 
 
@@ -95,11 +127,12 @@ public class Connection {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Connection [CardId=").append(CardId).append(", UserId=")
-				.append(UserId).append(", UserProfileImageUri=")
-				.append(UserProfileImageUri).append(", FirstName=")
-				.append(FirstName).append(", LastName=").append(LastName)
-				.append("]");
+		builder.append("Connection [CardId=").append(CardId)
+				.append(", UserId=").append(UserId)
+				.append(", UserProfileImageUri=").append(UserProfileImageUri)
+				.append(", FirstName=").append(FirstName).append(", LastName=")
+				.append(LastName).append(", EventMet=").append(EventMet)
+				.append(", DateMet=").append(DateMet).append("]");
 		return builder.toString();
 	}
     
