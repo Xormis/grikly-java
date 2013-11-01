@@ -781,8 +781,12 @@ public class Grikly{
 		client.execute();
 	}//end deleteContact method
 	
-	
-	public static LocalDate convertToDate (String date)
+	/**
+	 * Convert to date
+	 * @param date
+	 * @return
+	 */
+	public LocalDate convertToDate (String date)
 	{
 		DateTimeFormatter parser = ISODateTimeFormat.dateTimeNoMillis();
 		return parser.parseLocalDate(date+"Z");
