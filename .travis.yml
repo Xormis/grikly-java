@@ -4,4 +4,4 @@ jdk:
   - openjdk7
   - openjdk6
 
-install: mvn
+install: mvn install 
