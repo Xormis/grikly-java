@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -787,10 +788,10 @@ public class Grikly{
 	 * @param date
 	 * @return
 	 */
-	public LocalDate convertToDate (String date)
+	public DateTime convertToDate (String date)
 	{
 		DateTimeFormatter parser = ISODateTimeFormat.dateTimeNoMillis();
-		return parser.parseLocalDate(date+"Z");
+		return parser.parseDateTime(date+"Z");
 	}//end method
 	
 }//end  Grikly class
