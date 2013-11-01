@@ -1,8 +1,6 @@
 package com.grikly.request;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -65,13 +63,13 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Conn
 				return arrayList;
 			}
 			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException("Http 404:" + EntityUtils.toString(response.getEntity()));
+				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
+			
+			if (response.getStatusLine().getStatusCode() == 403)
+				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
 			
 			if (response.getStatusLine().getStatusCode() == 500)
-				throw new ForbiddenException("Http 400: " + EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException("Http 400: " + EntityUtils.toString(response.getEntity()));
+				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
 			
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -80,23 +78,6 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Conn
 		}
 		return null;
 	}//end execute method	
-	
-	
-	/*
-	 * construct URL needed for request
-	 */
-	private String buildUrl (String searchText,int page)
-	{
-		try {
-			searchText = URLEncoder.encode(searchText,"utf-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		 StringBuffer buffer = new StringBuffer(String.format(URL.BASE.toString(), "Contacts"));
-         buffer.append(String.format("?searchText=%s&page=%d", searchText,page));
-         
-        // return buffer.toString();
-         return String.format(URL.BASE.toString(), "Contacts");
-	}//end buildUrl method
+
 	
 }//end HttpContactRequest class
