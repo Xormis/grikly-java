@@ -21,10 +21,7 @@ public class App
 		Grikly grikly = new Grikly("C049DBE3-C9E6-4176-9984-27C0119DB2D0");
 		grikly.addValidUserCredential(email, password);
 		User user = grikly.getValidUser(new LoginModel(email,password));
-		File file = new File("rock.jpg");
-		Card card = grikly.getCard(1);
-		
-		grikly.convertToDate(card.getContact().getDateMet());
+		System.out.println(grikly.convertToDate("2013-07-18T15:42:56"));
 	}
 	
     public static void main( String[] args )
