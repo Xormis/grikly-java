@@ -1,5 +1,11 @@
 package com.grikly.request;
 
+import java.net.URI;
+
+import org.apache.http.client.methods.HttpRequestBase;
+
+import com.grikly.URL;
+
 /**
  * HttpRequest is a abstract class that contain
  * all properties that are need to do HTTP Request 
@@ -38,6 +44,31 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	 */
 	public abstract T execute();
 	
+	
+	/**
+	 * Prepares  HTTP Request by adding the
+	 * required headers and correct URLs. [NOTE] 
+	 * This method accepts Base Classes of Apache Http 
+	 * Client HttpRequestBase which are HttpGet,HttpPost,
+	 * HttpDelete,and HttpPut.
+	 * @exception NullPointerException 
+	 * @author mario
+	 * @return HttpRequestBase
+	 */
+	protected HttpRequestBase prepareRequestMethod (HttpRequestBase httpRequestMethod)
+	{
+		if (getPath() == null)
+			throw new NullPointerException ("No Path was supplied");
+		
+		httpRequestMethod.setURI(URI.create(String.format(URL.BASE.toString(),getPath())));
+		httpRequestMethod.addHeader("ApiKey", getApiKey());
+		
+		//adds authInfo when supplied
+		if (getAuthInfo() != null)
+			httpRequestMethod.addHeader("Authorization","Basic " + getAuthInfo());
+		
+		return httpRequestMethod;
+	}//end prepareRequestMethod method
 	
 	
 	/**
@@ -97,7 +128,5 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	{
 		return authedInfo;
 	}//end getAuthInfo method
-
-
 
 }//end HttpRequest class

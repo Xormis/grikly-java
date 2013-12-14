@@ -13,10 +13,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
-import com.grikly.URL;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.InternalServerErrorException;
-import com.grikly.exception.NotFoundException;
+
 
 /**
  * HttpPostRequest is used to execute a HTTP
@@ -47,21 +44,12 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 	 */
 	public T execute()
 	{
-		
-		if (getPath() == null)
-			throw new NullPointerException ("No Path was supplied");
-		
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost(String.format(URL.BASE.toString(), getPath()));
-		
-		post.addHeader("ApiKey",getApiKey());
-		
-		if (getAuthInfo() != null)
-			post.addHeader("Authorization","Basic " + getAuthInfo());
+		HttpPost post = new HttpPost();
+		String result = null;
+		Gson gson = new Gson ();
 		try 
 		{
-			Gson gson = new Gson ();
-			
 			if (getModel() != null)
 			{
 				StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
@@ -69,40 +57,17 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 				post.setHeader("Content-type", "application/json");
 				post.setEntity(entity);
 			}
-			HttpResponse response = client.execute(post);
-			if(response.getStatusLine().getStatusCode() == 200)
-			{
-				String result = EntityUtils.toString(response.getEntity());
-				if (result != null)
-					return new Gson().fromJson(result, getType());
-			}
-			
-			if (response.getStatusLine().getStatusCode() == 201)
-			{
-				String result = EntityUtils.toString(response.getEntity());
-				if (result != null)
-					return gson.fromJson(result, getType());
-			}
-			
-			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
+			HttpResponse response = client.execute(prepareRequestMethod(post));
+			result = EntityUtils.toString(response.getEntity());
 		} 
-		catch (ClientProtocolException e) 
-		{
+		catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} 
-		catch (IOException e) 
-		{
+		catch (IOException e) {
 			e.printStackTrace();
-		}
+		};
 		
-		return null;
+		return (result != null) ? gson.fromJson(result, getType()) : null;
 	}//end execute method
 
 }//end HttpPostRequest class

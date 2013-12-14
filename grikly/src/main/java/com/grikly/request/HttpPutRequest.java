@@ -14,10 +14,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
-import com.grikly.URL;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.InternalServerErrorException;
-import com.grikly.exception.NotFoundException;
 
 /**
  * HttpPutRequest is used to execute a HTTP
@@ -48,59 +44,33 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 	 */
 	public T execute()
 	{
-		
-		if (getPath() == null)
-			throw new NullPointerException ("No Path was supplied");
-		
-		if (getModel () == null)
-			throw new NullPointerException("No Model was Supplied");
-		
 		HttpClient client = new DefaultHttpClient ();
-		HttpPut put = new HttpPut(String.format(URL.BASE.toString(), getPath()));
-		
-		put.addHeader("ApiKey", getApiKey());
-		if (getAuthInfo() != null)
-			put.addHeader("Authorization","Basic " + getAuthInfo());
-		
+		HttpPut put = new HttpPut();
 		Gson gson = new Gson();
-		
+		String result = null;
 		try 
 		{
-			StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
-			entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-			put.setHeader("Content-type", "application/json");
-			put.setEntity(entity);
-			
-			HttpResponse response = client.execute(put);
-			if (response.getStatusLine().getStatusCode() == 200)
+			if (getModel() != null)
 			{
-				String json = EntityUtils.toString(entity);
-				if (json != null)
-					return new Gson().fromJson(json, getType());
+				StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
+				entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+				put.setHeader("Content-type", "application/json");
+				put.setEntity(entity);
 			}
 			
-			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
+			HttpResponse response = client.execute(prepareRequestMethod(put));
+			result = EntityUtils.toString(response.getEntity());			
 		}
-		catch (UnsupportedEncodingException e)
-		{
+		catch (UnsupportedEncodingException e){
 			e.printStackTrace();
 		} 
-		catch (ClientProtocolException e)
-		{
+		catch (ClientProtocolException e){
 			e.printStackTrace();
 		} 
-		catch (IOException e) 
-		{
+		catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return (result != null) ? gson.fromJson(result,getType()) : null;
 	}//end execute method
 
 }//end HttpPutRequest class

@@ -10,10 +10,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
-import com.grikly.URL;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.InternalServerErrorException;
-import com.grikly.exception.NotFoundException;
+
 
 /**
  * HttpGetRequest is used to execute a HTTP
@@ -46,34 +43,13 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	 */
 	public T execute()
 	{
-		if (getPath() == null)
-			throw new NullPointerException ("No Path was supplied");
-		
-		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet(String.format(URL.BASE.toString(),getPath()));
-		get.addHeader("ApiKey", getApiKey());
-		
-		//adds authInfo when supplied
-		if (getAuthInfo() != null)
-			get.addHeader("Authorization","Basic " + getAuthInfo());
+		String entity = null;
 		try 
 		{
-			HttpResponse response = client.execute(get);
-			if (response.getStatusLine().getStatusCode() == 200 )
-			{
-				String entity = EntityUtils.toString(response.getEntity());
-				if (entity != null)
-					return new Gson().fromJson(entity, getType());
-			}
-			
-			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
-	
-			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
+		
+			entity = EntityUtils.toString(response.getEntity());	
 		} 
 		catch (ClientProtocolException e) 
 		{
@@ -83,7 +59,7 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 		{
 			e.printStackTrace();
 		}
-		return null;
+		return (entity != null) ? new Gson().fromJson(entity, getType()) : null;
 	}//end execute method
 
 

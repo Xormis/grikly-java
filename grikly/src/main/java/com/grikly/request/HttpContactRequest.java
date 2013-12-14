@@ -12,10 +12,6 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.grikly.URL;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.InternalServerErrorException;
-import com.grikly.exception.NotFoundException;
 import com.grikly.model.Connection;
 
 /**
@@ -47,30 +43,15 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Conn
 	public ArrayList<Connection> execute() 
 	{		
 		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet(String.format(URL.BASE.toString(), "Contacts/All"));
-		get.addHeader("ApiKey", getApiKey());
-		
-		if (getAuthInfo() != null)
-			get.addHeader("Authorization","Basic " + getAuthInfo());
-		
 		try 
 		{
-			HttpResponse response = client.execute(get);
+			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
 			if (response.getStatusLine().getStatusCode() == 200)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				ArrayList<Connection>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Connection>>(){}.getType());
 				return arrayList;
 			}
-			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
-			
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

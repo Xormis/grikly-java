@@ -5,14 +5,9 @@ import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import com.grikly.URL;
-import com.grikly.exception.ForbiddenException;
-import com.grikly.exception.InternalServerErrorException;
-import com.grikly.exception.NotFoundException;
 
 /**
  * HttpDeleteRequest is used to execute a HTTP
@@ -44,41 +39,19 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, String> {
 	 */
 	public String execute()
 	{
-		if (getPath() == null)
-			throw new NullPointerException ("No Path was supplied");
-		
 		HttpClient client = new DefaultHttpClient ();
-		HttpDelete delete = new HttpDelete(String.format(URL.BASE.toString(), getPath()));
-		
-		delete.addHeader("ApiKey",getApiKey());
-		if (getAuthInfo() != null)
-			delete.addHeader("Authorization","Basic " + getAuthInfo());
+		HttpResponse response = null;
 		try 
 		{
-			HttpResponse response = client.execute(delete);
-			if (response.getStatusLine().getStatusCode() == 200)
-				return  "Success";
-						
-			if (response.getStatusLine().getStatusCode() == 404)
-				throw new NotFoundException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 403)
-				throw new ForbiddenException(EntityUtils.toString(response.getEntity()));
-			
-			if (response.getStatusLine().getStatusCode() == 500)
-				throw new InternalServerErrorException(EntityUtils.toString(response.getEntity()));
+			response = client.execute(prepareRequestMethod(new HttpPut()));
 		} 
-		catch (ClientProtocolException e) 
-		{
-			// TODO Auto-generated catch block
+		catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} 
-		catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
+		catch (IOException e) {
 			e.printStackTrace();
 		}
-		return  "Fail";
+		return (response.getStatusLine().getStatusCode() == 200) ? "success" : "fail";
 	}//end execute method
 
 }//end HttpDeleteRequest class

@@ -84,8 +84,9 @@ public final class HttpBuilder<E,T> {
 	}//end buildHttpPut method
 	
 	
-	public Request<E, T> buildHttpMultiPartRequest ()
+	public Request<E, T> buildHttpMultiPartRequest (E model)
 	{
+		this.model = model;
 		return new HttpMultiPartRequest <E,T>(this);
 	}//end 
 	
