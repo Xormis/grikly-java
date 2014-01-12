@@ -1,6 +1,8 @@
 package com.grikly;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,6 +15,25 @@ import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
 
 public class AccessTokenManager {
+	private final String apiKey;
+	
+	
+	/**
+	 * Default Constructor
+	 * @author Mario Dennis
+	 * @param apiKey
+	 */
+	public AccessTokenManager(String apiKey)
+	{
+		this.apiKey = apiKey;
+	}//end constructor
+	
+	
+	private String getApiKey ()
+	{
+		return apiKey;
+	}//end getApiKey method
+	
 	
 	/**
 	 * Gets AccessToken 
@@ -20,17 +41,17 @@ public class AccessTokenManager {
 	 * @param apiKey
 	 * @return AccessToken
 	 */
-	public AccessToken getAccessToken(UserCredential userCredential, String apiKey) 
+	public AccessToken getAccessToken(UserCredential userCredential) 
 	{
-		if (userCredential == null || apiKey == null)
-			throw new NullPointerException();
+		if (userCredential == null)
+			throw new NullPointerException("Null UserCredential instance supplied");
 		
 		AccessToken accessToken = loadToken();//loads cached AccessToken
 		
 		if (accessToken != null && !accessToken.isExpired())
 			return accessToken;
 		
-		return processToken (userCredential,apiKey);
+		return processToken (userCredential);
 	}//end getAccessToken method
 	
 	
@@ -40,7 +61,7 @@ public class AccessTokenManager {
 	 * @param apiKey
 	 * @return
 	 */
-	private AccessToken processToken (UserCredential userCredential,String apiKey)
+	private AccessToken processToken (UserCredential userCredential)
 	{
 		//add parameters
 		Map<String, String> params = new HashMap<String, String>();
@@ -48,7 +69,7 @@ public class AccessTokenManager {
 		params.put("username", userCredential.getEmail());
 		params.put("password", userCredential.getPassword());
 		
-		HttpBuilder<Void, AccessToken> builder = new HttpBuilder<Void, AccessToken>(AccessToken.class, apiKey); 
+		HttpBuilder<Void, AccessToken> builder = new HttpBuilder<Void, AccessToken>(AccessToken.class, getApiKey()); 
 		builder.setPath("Token");
 		builder.addHttpParams(params);
 		
@@ -95,12 +116,16 @@ public class AccessTokenManager {
 	 * a AccessToken instance.
 	 * @author mario
 	 * @return AccessToken null when no 
+	 * @throws IOException 
 	 */
 	private AccessToken loadToken ()
 	{
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream("accessToken.property"));
+			File file = new File("accessToken.property");
+			file.createNewFile();
+			
+			properties.load(new FileInputStream (file));
 			
 			/*
 			 * Parse Property File only if an
@@ -117,6 +142,8 @@ public class AccessTokenManager {
 				accessToken.setIssued(properties.getProperty(GriklyToken.ISSUED.toString()));
 				return accessToken;
 			}
+		} catch (FileNotFoundException e) {
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

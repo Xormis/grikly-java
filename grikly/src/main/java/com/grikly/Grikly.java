@@ -16,6 +16,7 @@ import com.grikly.model.UserCredential;
 import com.grikly.model.NewUser;
 import com.grikly.model.SendCardModel;
 import com.grikly.model.User;
+import com.grikly.model.UserInfo;
 import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
 
@@ -34,7 +35,7 @@ public class Grikly{
 	public Grikly (String apiKey)
 	{
 		this.apiKey = apiKey;
-		this.accessTokenManager = new AccessTokenManager();
+		this.accessTokenManager = new AccessTokenManager(apiKey);
 	}//end constructor method
 	
 	
@@ -86,13 +87,34 @@ public class Grikly{
 
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
 		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential(), getApiKey()));
+		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential()));
 		
 		Request<Integer, User> request =  builder.buildHttpGet();
 		
 		GriklyClient<Integer, User> client = new GriklyClient<Integer, User>(request, response);
 		client.execute();
 	}//end fetchUser method
+	
+	
+	/**
+	 * Gets UserInfo
+	 * @author Mario Dennis
+	 * @param userCredential
+	 * @return UserInfo
+	 */
+	public UserInfo getUserInfo (UserCredential userCredential)
+	{
+		if (userCredential == null)
+			throw new NullPointerException("Null UserCredential instance supplied");
+		
+		HttpBuilder<Void, UserInfo> builder = new HttpBuilder<>(UserInfo.class, getApiKey());
+		builder.setPath("v1/Account/UserInfo");
+		builder.setAccessToken(accessTokenManager.getAccessToken(userCredential));
+		
+
+		Request<Void, UserInfo> request = builder.buildHttpGet();
+		return request.execute();
+	}//end getUserInfo method
 	
 	
 	
@@ -109,7 +131,7 @@ public class Grikly{
 		
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
 		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential(), getApiKey()));
+		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential()));
 		
 		Request<Integer, User> request = builder.buildHttpGet();
 		return request.execute();
