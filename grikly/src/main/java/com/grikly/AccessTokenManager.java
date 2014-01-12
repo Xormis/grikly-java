@@ -91,7 +91,7 @@ public class AccessTokenManager {
 	{
 		Properties properties = new Properties();
 		try {
-			if (accessToken != null) 
+			if (accessToken != null && accessToken.getAccess_token() != null) 
 			{
 				properties.setProperty(GriklyToken.ACCESS_TOKEN.toString(),
 						               accessToken.getAccess_token());
