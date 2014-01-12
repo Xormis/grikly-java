@@ -22,6 +22,7 @@ import com.grikly.request.Request;
 public class Grikly{
 
 	private final String apiKey;
+	private final AccessTokenManager accessTokenManager;
 	private UserCredential userCredential = new UserCredential();
 	
 	
@@ -33,6 +34,7 @@ public class Grikly{
 	public Grikly (String apiKey)
 	{
 		this.apiKey = apiKey;
+		this.accessTokenManager = new AccessTokenManager();
 	}//end constructor method
 	
 	
@@ -84,8 +86,7 @@ public class Grikly{
 
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
 		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(AccessTokenManager.getAccessTokenManager()
-							   .getAccessToken(getUserCredential(), getApiKey()));
+		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential(), getApiKey()));
 		
 		Request<Integer, User> request =  builder.buildHttpGet();
 		
@@ -108,8 +109,7 @@ public class Grikly{
 		
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
 		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(AccessTokenManager.getAccessTokenManager()
-				   			   .getAccessToken(getUserCredential(), getApiKey()));
+		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential(), getApiKey()));
 		
 		Request<Integer, User> request = builder.buildHttpGet();
 		return request.execute();

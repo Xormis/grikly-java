@@ -13,20 +13,6 @@ import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
 
 public class AccessTokenManager {
-
-	private static final AccessTokenManager manager = new AccessTokenManager();
-	private AccessTokenManager () {}
-	
-	/**
-	 * Gets Singleton instance of AccessTokenManager
-	 * @author mario
-	 * @return AccessTokenManager
-	 */
-	protected static AccessTokenManager getAccessTokenManager ()
-	{
-		return manager;
-	}//end getAccessTokenManager method
-	
 	
 	/**
 	 * Gets AccessToken 
