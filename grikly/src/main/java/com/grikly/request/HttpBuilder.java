@@ -14,8 +14,8 @@ import com.grikly.model.Connection;
  * base classes are  immutable and thread-safe.
  * @author Mario Dennis
  *
- * @param <E>
- * @param <T>
+ * @param <E> element type for processing
+ * @param <T> return type.
  */
 public final class HttpBuilder<E,T> {
 	
