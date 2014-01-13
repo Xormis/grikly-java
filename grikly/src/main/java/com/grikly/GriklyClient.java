@@ -40,18 +40,10 @@ public class GriklyClient <E,T>{
 		Runnable thread = new Runnable() 
 		{
 			
-			public void run()
+			public void run() throws NotFoundException
 			{
-				T result = null;
-				
-					try {
-						result = (T) request.execute ();
-						response.response(result);
-					} catch (NotFoundException e) {
-						e.printStackTrace();
-					}
-					
-					
+				T result = (T) request.execute ();
+				response.response(result);
 			}
 		};
 		new Thread(thread).start();

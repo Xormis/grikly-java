@@ -1,7 +1,7 @@
 package com.grikly.model;
 
 
-public class Connection {
+public class Connection extends AbstractModel{
 	private int CardId;
 	public int UserId;
     public String UserProfileImageUri;
@@ -119,22 +119,17 @@ public class Connection {
 	{
 		CardId = cardId;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Connection [CardId=").append(CardId)
-				.append(", UserId=").append(UserId)
-				.append(", UserProfileImageUri=").append(UserProfileImageUri)
-				.append(", FirstName=").append(FirstName).append(", LastName=")
-				.append(LastName).append(", EventMet=").append(EventMet)
-				.append(", DateMet=").append(DateMet).append("]");
-		return builder.toString();
+		return String
+				.format("Connection [CardId=%s, UserId=%s, UserProfileImageUri=%s, FirstName=%s, LastName=%s, EventMet=%s, DateMet=%s, getMessage()=%s, toString()=%s, getClass()=%s, hashCode()=%s]",
+						CardId, UserId, UserProfileImageUri, FirstName,
+						LastName, EventMet, DateMet, getError_description(),
+						super.toString(), getClass(), hashCode());
 	}
+	
     
     
 }//end Connection class

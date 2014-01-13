@@ -1,12 +1,12 @@
 package com.grikly.model;
 
-public class LoginModel{
+public class UserCredential{
 
 	private String Email;
 	private String Password;
 	
 	//Default constructor
-	public LoginModel (){}
+	public UserCredential (){}
 	
 	
 	/**
@@ -14,7 +14,7 @@ public class LoginModel{
 	 * @param email
 	 * @param password
 	 */
-	public LoginModel (String email,String password)
+	public UserCredential (String email,String password)
 	{
 		this.Email = email;
 		this.Password = password;

@@ -70,7 +70,7 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		return (result != null) ? gson.fromJson(result,getType()) : null;
+		return (result != null) ? gson.fromJson(result,getClazz()) : null;
 	}//end execute method
 
 }//end HttpPutRequest class

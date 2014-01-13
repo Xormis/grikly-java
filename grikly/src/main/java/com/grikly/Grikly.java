@@ -1,20 +1,28 @@
 package com.grikly;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
-import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
+import org.joda.time.DateMidnight.Property;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import com.grikly.exception.NotFoundException;
+import com.grikly.model.AccessToken;
 import com.grikly.model.Card;
 import com.grikly.model.Connection;
 import com.grikly.model.Contact;
-import com.grikly.model.LoginModel;
+import com.grikly.model.UserCredential;
 import com.grikly.model.NewUser;
 import com.grikly.model.SendCardModel;
 import com.grikly.model.User;
@@ -24,7 +32,7 @@ import com.grikly.request.Request;
 public class Grikly{
 
 	private final String apiKey;
-	private byte[] authInfo;
+	private UserCredential userCredential = new UserCredential();
 	
 	
 	/**
@@ -49,19 +57,6 @@ public class Grikly{
 	}//end getApiKey method
 	
 	
-	/**
-	 * Check if user is authenticated
-	 * @author Mario Dennis
-	 * @return boolean
-	 */
-	public boolean isAuthed ()
-	{
-		if (authInfo == null)
-			return false;
-		else 
-			return true;
-	}//end isAuthed method
-	
 	
 	/**
 	 * Add the credentials of the user to make authenticated 
@@ -72,17 +67,15 @@ public class Grikly{
 	 */
 	public void addValidUserCredential (String email,String password)
 	{
-		String credential = email + ":" + password;
-		try 
-		{
-			authInfo = Base64.encodeBase64(credential.getBytes("UTF-8"));
-		} 
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		userCredential.setEmail(email);
+		userCredential.setPassword(password);
 	}//end addValidUserCredential method
 	
+	
+	private UserCredential getUserCredential ()
+	{
+		return userCredential;
+	}//end getUserCredential method
 	
 	
 	/**
@@ -91,7 +84,7 @@ public class Grikly{
 	 * @param userId
 	 * @param response
 	 */
-	public void fetchUser (int userId, ResponseListener<User> response)
+	public void fetchUser (int userId, ResponseListener<User> response) throws NotFoundException
 	{
 		if (userId <= 0)
 			throw new IllegalArgumentException("User id must be greater than zero");
@@ -100,12 +93,9 @@ public class Grikly{
 			throw new NullPointerException("Null Argument Supplied");
 
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
-		
 		builder.setPath(String.format("Users/%d", userId));
-		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
+		builder.setAccessToken(AccessTokenManager.getAccessTokenManager()
+							   .getAccessToken(getUserCredential(), getApiKey()));
 		
 		Request<Integer, User> request =  builder.buildHttpGet();
 		
@@ -128,12 +118,10 @@ public class Grikly{
 		
 		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
 		builder.setPath(String.format("Users/%d", userId));
+		builder.setAccessToken(AccessTokenManager.getAccessTokenManager()
+				   			   .getAccessToken(getUserCredential(), getApiKey()));
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		Request<Integer, User> request = builder.buildHttpGet();
-		
 		return request.execute();
 	}//end getUser method 
 	
@@ -157,9 +145,6 @@ public class Grikly{
 		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Integer, Card> request = builder.buildHttpGet();
 		GriklyClient<Integer, Card> client = new GriklyClient<Integer, Card>(request, response);
@@ -181,12 +166,7 @@ public class Grikly{
 		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Integer, Card> request = builder.buildHttpGet();
-		
 		return request.execute();
 	}//end getCard method
 	
@@ -202,12 +182,8 @@ public class Grikly{
 		
 		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean>(Boolean.class,getApiKey())
 													.setPath(String.format("Account/EmailExist?Email=%s", email));
-							
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
-		 Request<String, Boolean> request = builder.buildHttpGet();
+		Request<String, Boolean> request = builder.buildHttpGet();
 		GriklyClient<String, Boolean> client = new GriklyClient<String, Boolean>(request, response);
 		client.execute();
 	}//end emailExist method
@@ -226,10 +202,6 @@ public class Grikly{
 
 		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean> (Boolean.class,getApiKey());
 		builder.setPath(String.format("Account/EmailExist?Email=%s", email));
-		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<String, Boolean> request = builder.buildHttpGet();
 		return request.execute();
@@ -250,10 +222,6 @@ public class Grikly{
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setModel(card);
 		builder.setPath("Cards");
-		
-		//add authInfo if supplied 
-		if (isAuthed());
-			builder.setAuthInfo(authInfo);
 			
 		Request<Card, Card> request = builder.buildHttpPost();
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response);
@@ -276,10 +244,6 @@ public class Grikly{
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setModel(card);
 		builder.setPath("Cards");
-		
-		//add authInfo if supplied
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Card, Card> request = builder.buildHttpPost();
 		return request.execute();
@@ -304,10 +268,6 @@ public class Grikly{
 		HttpBuilder<Card, String> builder  = new HttpBuilder<Card, String>(String.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Card, String> request = builder.buildHttpDelete();
 		GriklyClient<Card,String> client = new GriklyClient<Card,String>(request, response);
 		client.execute();
@@ -327,10 +287,6 @@ public class Grikly{
 		HttpBuilder<Card, String> builder = new HttpBuilder<Card, String>(String.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Card, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteCard method
@@ -342,21 +298,17 @@ public class Grikly{
 	 * @param model
 	 * @param response
 	 */
-	public void fetchValidUser (LoginModel model,ResponseListener<User> response)
+	public void fetchValidUser (UserCredential model,ResponseListener<User> response)
 	{
 		if (model == null || response == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		HttpBuilder<LoginModel, User> builder = new HttpBuilder<LoginModel, User>(User.class, getApiKey());
+		HttpBuilder<UserCredential, User> builder = new HttpBuilder<UserCredential, User>(User.class, getApiKey());
 		builder.setModel(model);
 		builder.setPath("Account/Login");
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
-		Request<LoginModel, User> request = builder.buildHttpPost();
-		GriklyClient<LoginModel, User> client = new GriklyClient<LoginModel, User>(request, response);
+		Request<UserCredential, User> request = builder.buildHttpPost();
+		GriklyClient<UserCredential, User> client = new GriklyClient<UserCredential, User>(request, response);
 		client.execute();
 	}//end fetchValidUser method
 	
@@ -367,22 +319,19 @@ public class Grikly{
 	 * @param model
 	 * @param response
 	 */
-	public User getValidUser (LoginModel model)
+	public User getValidUser (UserCredential model)
 	{
 		if (model == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
-		HttpBuilder<LoginModel, User> builder = new HttpBuilder<LoginModel, User>(User.class, getApiKey());
+		HttpBuilder<UserCredential, User> builder = new HttpBuilder<UserCredential, User>(User.class, getApiKey());
 		builder.setModel(model);
 		builder.setPath("Account/Login");
 		
-		//add authInfo if supplied 
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
-		Request<LoginModel, User> request = builder.buildHttpPost();
+		Request<UserCredential, User> request = builder.buildHttpPost();
 		return request.execute();
 	}//end getValidUser method
+	
 	
 	
 	
@@ -399,11 +348,6 @@ public class Grikly{
 		HttpBuilder<NewUser, User> builder = new HttpBuilder<NewUser, User> (User.class,getApiKey());
 		builder.setModel(newUser);
 		builder.setPath("Account/Register");
-		
-		//add authInfo if supplied
-		if(isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		
 		Request<NewUser, User> request = builder.buildHttpPost();
 		GriklyClient<NewUser, User> client = new GriklyClient<NewUser, User>(request, response);
@@ -426,10 +370,6 @@ public class Grikly{
 		builder.setModel(newUser);
 		builder.setPath("Account/Register");
 		
-		//add authInfo if supplied
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<NewUser, User> request = builder.buildHttpPost();
 		return request.execute();
 	}//end register method
@@ -450,10 +390,6 @@ public class Grikly{
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setModel(card);
 		builder.setPath(String.format("Cards/%d", card.getCardId()));
-		
-		//add authInfo if supplied
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Card, Card> request = builder.buildHttpPut();
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response);
@@ -476,12 +412,7 @@ public class Grikly{
 		builder.setModel(card);
 		builder.setPath(String.format("Card/%d", card.getCardId()));
 		
-		//add authInfo if supplied
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Card, Card> request = builder.buildHttpPut();
-		
 		return request.execute();
 	}//end updateCard method 
 	
@@ -505,9 +436,6 @@ public class Grikly{
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
 		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Card, Card> request = builder.buildHttpPost();
 		GriklyClient<Card, Card> client = new GriklyClient<Card, Card> (request,response);
 		client.execute();
@@ -528,9 +456,6 @@ public class Grikly{
 		
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Card, Card> request = builder.buildHttpPost();
 		request.execute();
@@ -557,10 +482,6 @@ public class Grikly{
 		builder.setModel(model);
 		builder.setPath(String.format("Cards/%d/",cardId));
 		
-		//add authInfo if supplied
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<SendCardModel, Card> request = builder.buildHttpPost();
 		GriklyClient<SendCardModel, Card> client = new GriklyClient<SendCardModel, Card>(request, response);
 		client.execute();
@@ -578,9 +499,7 @@ public class Grikly{
 	public List<Connection> getConnection ()
 	{
 		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
+		builder.setPath("Contacts/All");
 		
 		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
 		return request.execute();
@@ -596,9 +515,7 @@ public class Grikly{
 	public void getConnection(ResponseListener<ArrayList<Connection>> response)
 	{
 		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
-	
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
+		builder.setPath("Contacts/All");
 		
 		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
 	
@@ -624,9 +541,6 @@ public class Grikly{
 		builder.setPath("Contacts");
 		builder.setModel(contact);
 		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Contact, Contact> request = builder.buildHttpPost();
 		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
 		client.execute();
@@ -648,10 +562,7 @@ public class Grikly{
 		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
 		builder.setPath("Contacts");
 		builder.setModel(contact);
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
+
 		Request<Contact, Contact> request = builder.buildHttpPost();
 		return request.execute();
 	}//end createContact method 
@@ -671,9 +582,6 @@ public class Grikly{
 		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
 		builder.setModel(contact);
 		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Contact, Contact> request = builder.buildHttpPut();
 		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
@@ -696,9 +604,6 @@ public class Grikly{
 		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
 		builder.setModel(contact);
 		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Contact, Contact> request = builder.buildHttpPut();
 		return request.execute();
@@ -724,12 +629,8 @@ public class Grikly{
 		
 		HttpBuilder<File,String> builder = new HttpBuilder<File, String>(String.class, getApiKey());
 		builder.setPath(String.format("Users/%d/ProfileImage", userId));
-		builder.setModel(file);
 		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
-		Request<File, String> request = builder.buildHttpMultiPartRequest();
+		Request<File, String> request = builder.buildHttpMultiPartRequest(file);
 		GriklyClient<File, String> client = new GriklyClient<File, String>(request, response);
 		
 		client.execute();
@@ -748,9 +649,6 @@ public class Grikly{
 		
 		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
-		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
 		
 		Request<Contact, String> request = builder.buildHttpDelete();
 		return request.execute();
@@ -774,13 +672,11 @@ public class Grikly{
 		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
 		
-		if (isAuthed())
-			builder.setAuthInfo(authInfo);
-		
 		Request<Contact, String> request = builder.buildHttpDelete();
 		GriklyClient<Contact, String> client = new GriklyClient<Contact, String>(request, response);
 		client.execute();
 	}//end deleteContact method
+	
 	
 	/**
 	 * Convert to date

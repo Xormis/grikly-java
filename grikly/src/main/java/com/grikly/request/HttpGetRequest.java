@@ -23,7 +23,6 @@ import com.google.gson.Gson;
  */
 public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	
-
 	/**
 	 * HttpGetRequest Default Constructor.
 	 * @author Mario Dennis
@@ -48,8 +47,12 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 		{
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
-		
-			entity = EntityUtils.toString(response.getEntity());	
+			
+			if (response.getStatusLine().getStatusCode() == 200)
+			{
+				entity = EntityUtils.toString(response.getEntity());
+				return new Gson().fromJson(entity, getClazz());
+			}
 		} 
 		catch (ClientProtocolException e) 
 		{
@@ -59,7 +62,7 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 		{
 			e.printStackTrace();
 		}
-		return (entity != null) ? new Gson().fromJson(entity, getType()) : null;
+		return null;
 	}//end execute method
 
 

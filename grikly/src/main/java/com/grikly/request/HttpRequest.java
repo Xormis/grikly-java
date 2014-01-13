@@ -1,10 +1,13 @@
 package com.grikly.request;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.http.client.methods.HttpRequestBase;
 
 import com.grikly.URL;
+import com.grikly.model.AccessToken;
 
 /**
  * HttpRequest is a abstract class that contain
@@ -17,10 +20,12 @@ import com.grikly.URL;
 public abstract class HttpRequest <E,T> implements Request<E, T> {
 	
 	private final String apiKey;
-	private final Class<T> type;
+	private final Class<T> clazz;
 	private final String path;
 	private final E model;
 	private final String authedInfo;
+	private final Map<String, String> paramMap;
+	private final AccessToken accessToken;
 	
 	/**
 	 * HttpRequest Default Constructor
@@ -30,10 +35,12 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	protected HttpRequest (HttpBuilder<E, T> builder)
 	{
 		this.apiKey = builder.getApiKey();
-		this.type = builder.getType();
+		this.clazz = builder.getType();
 		this.path = builder.getPath();
 		this.model = builder.getModel();
 		this.authedInfo = builder.getAuthInfo();
+		this.paramMap = builder.getHttpParams();
+		this.accessToken = builder.getAccessToken();
 	}//end constructor 
 	
 
@@ -47,15 +54,16 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	
 	/**
 	 * Prepares  HTTP Request by adding the
-	 * required headers and correct URLs. [NOTE] 
-	 * This method accepts Base Classes of Apache Http 
+	 * required headers and correct URLs. [NOTE] This 
+	 * method accepts Base Classes of the Apache Http 
 	 * Client HttpRequestBase which are HttpGet,HttpPost,
 	 * HttpDelete,and HttpPut.
 	 * @exception NullPointerException 
 	 * @author mario
 	 * @return HttpRequestBase
+	 * @throws UnsupportedEncodingException 
 	 */
-	protected HttpRequestBase prepareRequestMethod (HttpRequestBase httpRequestMethod)
+	protected HttpRequestBase prepareRequestMethod (HttpRequestBase httpRequestMethod) throws UnsupportedEncodingException
 	{
 		if (getPath() == null)
 			throw new NullPointerException ("No Path was supplied");
@@ -63,13 +71,15 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 		httpRequestMethod.setURI(URI.create(String.format(URL.BASE.toString(),getPath())));
 		httpRequestMethod.addHeader("ApiKey", getApiKey());
 		
-		//adds authInfo when supplied
-		if (getAuthInfo() != null)
-			httpRequestMethod.addHeader("Authorization","Basic " + getAuthInfo());
+		if (accessToken != null)
+			httpRequestMethod.addHeader("Authorization", String.format("Bearer %s", accessToken.getAccess_token()));
 		
 		return httpRequestMethod;
 	}//end prepareRequestMethod method
 	
+
+	
+
 	
 	/**
 	 * Get apiKey
@@ -82,15 +92,24 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	}//end getApiKey method
 	
 	
+	/**
+	 * Get HeaderMap 
+	 * @return Map <String,String>
+	 */
+	public Map<String, String> getHttpParams() 
+	{
+		return paramMap;
+	}
+
 
 	/**
 	 * Get type
 	 * @author Mario Dennis
 	 * @return the type
 	 */
-	public Class<T> getType()
+	public Class<T> getClazz()
 	{
-		return type;
+		return clazz;
 	}//end getType method
 
 	

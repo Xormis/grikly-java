@@ -1,8 +1,11 @@
 package com.grikly.request;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+import com.grikly.model.AccessToken;
 import com.grikly.model.Connection;
+
 
 /**
  * HttpBuilder class is used to set properties
@@ -21,6 +24,8 @@ public final class HttpBuilder<E,T> {
 	private E model;
 	private String apiKey;
 	private Class<T> type;
+	private Map<String, String> params;
+	private AccessToken accessToken;
 	
 	
 	/**
@@ -84,6 +89,11 @@ public final class HttpBuilder<E,T> {
 	}//end buildHttpPut method
 	
 	
+	/**
+	 * Builds a HttpMultiPartRequest
+	 * @param model
+	 * @return
+	 */
 	public Request<E, T> buildHttpMultiPartRequest (E model)
 	{
 		this.model = model;
@@ -125,6 +135,17 @@ public final class HttpBuilder<E,T> {
 	}//end setAuthInfo method
 	
 	
+	/**
+	 * Set UserCredential
+	 * @author mario
+	 * @param userCredential
+	 */
+	public void setAccessToken (AccessToken accessToken)
+	{
+		this.accessToken = accessToken;
+	}//end setAccessToken method
+	
+	
 	
 	/**
 	 * Set model attribute. This attribute 
@@ -138,6 +159,13 @@ public final class HttpBuilder<E,T> {
 		this.model = model;
 		return this;
 	}//end setModel method
+	
+	
+	public HttpBuilder<E, T> addHttpParams (Map<String, String> params)
+	{
+		this.params = params;
+		return this;
+	}//end setHeaderMap method
 	
 	
 	/**
@@ -183,7 +211,7 @@ public final class HttpBuilder<E,T> {
 	 * @author Mario Dennis
 	 * @return E
 	 */
-	public E getModel ()
+	protected E getModel ()
 	{
 		return model;
 	}//end getModel method
@@ -201,6 +229,16 @@ public final class HttpBuilder<E,T> {
 	
 	
 	/**
+	 * Get UserCredential 
+	 * @return
+	 */
+	protected AccessToken getAccessToken() 
+	{
+		return accessToken;
+	}//end getAccessToken method
+	
+	
+	/**
 	 * Get authInfo
 	 * @author Mario Dennis
 	 * @return 
@@ -210,4 +248,9 @@ public final class HttpBuilder<E,T> {
 		return authInfo;
 	}///end getAuthInfo method
 	
+	
+	protected Map<String, String> getHttpParams ()
+	{
+		return params;
+	}
 }//end GriklyBuilder class
