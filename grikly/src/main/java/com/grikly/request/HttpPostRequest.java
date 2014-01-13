@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -54,21 +55,17 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 	{
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost();
-		String result = null;
-		Gson gson = new Gson ();
 		try 
 		{
-			if (getModel() != null)
-			{
-				StringEntity entity = new StringEntity(gson.toJson(getModel()).toString());
-				entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-				post.setHeader("Content-type", "application/json");
-				post.setEntity(entity);
-			}
-			
+			addModel(post);
 			addHttpParams(post);// adds HTTP Parameters to post request
 			HttpResponse response = client.execute(prepareRequestMethod(post));
-			result = EntityUtils.toString(response.getEntity());
+			Header contentType = response.getFirstHeader("Content-Type");
+			if (contentType != null && contentType.getValue().contains("application/json"))
+			{
+				String entity = EntityUtils.toString(response.getEntity());
+				return new Gson().fromJson(entity, getClazz());
+			}
 		} 
 		catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -77,8 +74,25 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 			e.printStackTrace();
 		};
 		
-		return (result != null) ? gson.fromJson(result, getClazz()) : null;
+		return null;
 	}//end execute method
+	
+	
+	/*
+	 * Add model to request
+	 * @param post
+	 * @throws UnsupportedEncodingException
+	 */
+	private void addModel (HttpPost post) throws UnsupportedEncodingException
+	{
+		if (getModel() != null)
+		{
+			StringEntity entity = new StringEntity(new Gson().toJson(getModel()).toString());
+			entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+			post.setHeader("Content-type", "application/json");
+			post.setEntity(entity);
+		}
+	}//end addModel method
 	
 
 	/*

@@ -2,6 +2,7 @@ package com.grikly.request;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -42,15 +43,15 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	 */
 	public T execute()
 	{
-		String entity = null;
 		try 
 		{
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
+			Header contentType = response.getFirstHeader("Content-Type");
 			
-			if (response.getStatusLine().getStatusCode() == 200)
+			if (contentType != null && contentType.getValue().contains("application/json"))
 			{
-				entity = EntityUtils.toString(response.getEntity());
+				String entity = EntityUtils.toString(response.getEntity());
 				return new Gson().fromJson(entity, getClazz());
 			}
 		} 
