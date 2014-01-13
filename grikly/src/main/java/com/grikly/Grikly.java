@@ -1,24 +1,14 @@
 package com.grikly;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateMidnight.Property;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import com.grikly.exception.NotFoundException;
-import com.grikly.model.AccessToken;
 import com.grikly.model.Card;
 import com.grikly.model.Connection;
 import com.grikly.model.Contact;
