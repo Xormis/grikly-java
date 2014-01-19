@@ -117,6 +117,28 @@ public class Grikly{
 	}//end getUserInfo method
 	
 	
+	/**
+	 * Gets UserInfo
+	 * @author Mario Dennis
+	 * @param userCredential
+	 * @return UserInfo
+	 */
+	public void fetchUserInfo (UserCredential userCredential,ResponseListener<UserInfo> responseListener)
+	{
+		if (userCredential == null || responseListener == null)
+			throw new NullPointerException("Null UserCredential instance supplied");
+		
+		HttpBuilder<Void, UserInfo> builder = new HttpBuilder<>(UserInfo.class, getApiKey());
+		builder.setPath("v1/Account/UserInfo");
+		builder.setAccessToken(accessTokenManager.getAccessToken(userCredential));
+		
+
+		Request<Void, UserInfo> request = builder.buildHttpGet();
+		GriklyClient<Void, UserInfo> client = new GriklyClient<>(request, responseListener);
+		client.execute();
+	}//end getUserInfo method
+	
+	
 	
 	/**
 	 * Get User.
