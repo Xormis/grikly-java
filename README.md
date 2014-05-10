@@ -12,8 +12,8 @@ Grikly Java is a library that wraps the [Grikly](http://grik.ly/) API.
 Acquire Access Token:
 
      UserCredential userCredential = new UserCredential();
-	userCredential.setEmail(email);
-	userCredential.setPassword(password);
+     userCredential.setEmail(email);
+     userCredential.setPassword(password);
      AccessToken accessToken = Grikly.getAccessToken(apiKey, userCredential);
 
 
