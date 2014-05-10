@@ -9,20 +9,20 @@ Grikly Java is a library that wraps the [Grikly](http://grik.ly/) API.
 
 #### Sample Source:
 
-Synchronous:
+Acquire Access Token:
+
+     UserCredential userCredential = new UserCredential();
+	userCredential.setEmail(email);
+	userCredential.setPassword(password);
+     AccessToken accessToken = Grikly.getAccessToken(apiKey, userCredential);
+
+
+Using Grikly:
 
      Grikly grikly = new Grikly (apiKey);
-     Card card = grikly.getCard(cardId);
+     grikly.setAccessToken(accessToken);
+     UserInfo userInfo = grikly.getUserInfo(userCredential);
 
-Asychronous:
-
-    Grikly grikly = new Grikly (apiKey);
-    grikly.fetchCard (cardId,new ResponseListener <Card>(){
-      public void response (Card result)
-      {
-         System.out.println (result);
-      }
-    });
     
 #### Api methods Covered
 
