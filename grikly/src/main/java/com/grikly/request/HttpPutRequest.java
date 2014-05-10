@@ -14,6 +14,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.grikly.exception.GriklyException;
 
 /**
  * HttpPutRequest is used to execute a HTTP
@@ -24,7 +25,7 @@ import com.google.gson.Gson;
  * @param <E>
  * @param <T>
  */
-public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
+public final class HttpPutRequest <E,T> extends AbstractHttpRequest<E, T> {
 
 	/**
 	 * HttpPutRequest Default Constructor.
@@ -42,7 +43,7 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	public T execute()
+	public T execute() throws GriklyException
 	{
 		HttpClient client = new DefaultHttpClient ();
 		HttpPut put = new HttpPut();
@@ -59,7 +60,12 @@ public final class HttpPutRequest <E,T> extends HttpRequest<E, T> {
 			}
 			
 			HttpResponse response = client.execute(prepareRequestMethod(put));
-			result = EntityUtils.toString(response.getEntity());			
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode >= 200 && statusCode < 300)
+				result = EntityUtils.toString(response.getEntity());
+			
+			else
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
 		}
 		catch (UnsupportedEncodingException e){
 			e.printStackTrace();

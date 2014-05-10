@@ -7,17 +7,18 @@ import java.util.Map;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import com.grikly.URL;
+import com.grikly.exception.GriklyException;
 import com.grikly.model.AccessToken;
 
 /**
- * HttpRequest is a abstract class that contain
+ * AbstractHttpRequest is a abstract class that contain
  * all properties that are need to do HTTP Request 
  * @author mario
  *
  * @param <E>
  * @param <T>
  */
-public abstract class HttpRequest <E,T> implements Request<E, T> {
+public abstract class AbstractHttpRequest <E,T> implements Request<E, T> {
 	
 	private final String apiKey;
 	private final Class<T> clazz;
@@ -32,7 +33,7 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	 * @author Mario Dennis
 	 * @param HttpBuilder<E,T>
 	 */
-	protected HttpRequest (HttpBuilder<E, T> builder)
+	protected AbstractHttpRequest (HttpBuilder<E, T> builder)
 	{
 		this.apiKey = builder.getApiKey();
 		this.clazz = builder.getType();
@@ -49,7 +50,7 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 	 * must provide there own implementation
 	 * of this method.
 	 */
-	public abstract T execute();
+	public abstract T execute() throws GriklyException;
 	
 	
 	/**
@@ -148,4 +149,4 @@ public abstract class HttpRequest <E,T> implements Request<E, T> {
 		return authedInfo;
 	}//end getAuthInfo method
 
-}//end HttpRequest class
+}//end AbstractHttpRequest class

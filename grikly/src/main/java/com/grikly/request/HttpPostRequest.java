@@ -22,6 +22,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.grikly.exception.GriklyException;
 
 
 /**
@@ -33,7 +34,7 @@ import com.google.gson.Gson;
  * @param <E>
  * @param <T>
  */
-public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
+public final class HttpPostRequest <E,T> extends AbstractHttpRequest<E, T>{
 	
 	/**
 	 * HttpPostRequest Default Constructor.
@@ -51,7 +52,7 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	public T execute()
+	public T execute() throws GriklyException
 	{
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost();
@@ -61,11 +62,17 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 			addHttpParams(post);// adds HTTP Parameters to post request
 			HttpResponse response = client.execute(prepareRequestMethod(post));
 			Header contentType = response.getFirstHeader("Content-Type");
-			if (contentType != null && contentType.getValue().contains("application/json"))
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if ((statusCode >= 200 && statusCode < 300) &&(contentType != null && contentType.getValue().contains("application/json")))
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				return new Gson().fromJson(entity, getClazz());
 			}
+			else if (statusCode >= 200 && statusCode < 300)
+				return null;
+			else
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -73,7 +80,6 @@ public final class HttpPostRequest <E,T> extends HttpRequest<E, T>{
 		catch (IOException e) {
 			e.printStackTrace();
 		};
-		
 		return null;
 	}//end execute method
 	

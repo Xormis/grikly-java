@@ -1,23 +1,41 @@
-import com.grikly.AccessTokenManager;
+
+import java.io.File;
+
 import com.grikly.Grikly;
+import com.grikly.exception.GriklyException;
 import com.grikly.model.AccessToken;
+import com.grikly.model.NewUser;
 import com.grikly.model.UserCredential;
-
-
 
 public class App 
 {
-	public App() 
+	public App()
 	{
-		String email = "shawn@xormis.com";
-		String password = "usertest";
+		String email = "mario@xormis.com";
+		String password = "computer876";
+		String apiKey = "c049dbe3-c9e6-4176-9984-27c0119db2d0";
 		
-		Grikly grikly = new Grikly("C049DBE3-C9E6-4176-9984-27C0119DB2D0");
-		grikly.addValidUserCredential(email, password);
-		System.out.println(grikly.getUser(1));
+		UserCredential userCredential = new UserCredential();
+		userCredential.setEmail(email);
+		userCredential.setPassword(password);
+		try {
+			AccessToken accessToken = Grikly.getAccessToken(apiKey, userCredential);
+			Grikly grikly = new Grikly(apiKey);
+			
+
+			grikly.setAccessToken(accessToken);
+			//File file = new File("/home/mario/Pictures/assassins_creed_3_connor_ice_wallpaper_by_h_thomson-d54pr9l.jpg");
+			//grikly.uploadProfileImage(file);
+			System.out.println(grikly.getUserInfo(userCredential));
+			//System.out.println(grikly.register(user));
+		} catch (GriklyException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
-    public static void main( String[] args )
+    public static void main( String[] args ) 
     {
     	new App ();
     }

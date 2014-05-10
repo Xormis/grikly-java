@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.grikly.exception.GriklyException;
 import com.grikly.model.Connection;
 
 /**
@@ -22,7 +23,7 @@ import com.grikly.model.Connection;
  * @param <String>
  * @param ArrayList<Card>
  */
-public final class HttpContactRequest extends HttpRequest<String, ArrayList<Connection>> {
+public final class HttpContactRequest extends AbstractHttpRequest<String, ArrayList<Connection>> {
 	
 	/**
 	 * HttpContactRequest Default Constructor.
@@ -40,18 +41,21 @@ public final class HttpContactRequest extends HttpRequest<String, ArrayList<Conn
 	 * @author Mario Dennis
 	 * @return ArrayList<Card>
 	 */
-	public ArrayList<Connection> execute() 
+	public ArrayList<Connection> execute() throws GriklyException
 	{		
 		HttpClient client = new DefaultHttpClient();
 		try 
 		{
 			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
-			if (response.getStatusLine().getStatusCode() == 200)
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode >= 200 && statusCode < 300)
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				ArrayList<Connection>arrayList = new Gson().fromJson(entity,new TypeToken<ArrayList<Connection>>(){}.getType());
 				return arrayList;
 			}
+			else
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

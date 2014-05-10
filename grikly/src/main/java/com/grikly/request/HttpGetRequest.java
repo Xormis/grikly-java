@@ -11,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.grikly.exception.GriklyException;
 
 
 /**
@@ -22,7 +23,7 @@ import com.google.gson.Gson;
  * @param <E>
  * @param <T>
  */
-public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
+public final class HttpGetRequest <E,T> extends AbstractHttpRequest<E, T> {
 	
 	/**
 	 * HttpGetRequest Default Constructor.
@@ -41,19 +42,23 @@ public final class HttpGetRequest <E,T> extends HttpRequest<E, T> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	public T execute()
+	public T execute() throws GriklyException
 	{
 		try 
 		{
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse response = client.execute(prepareRequestMethod(new HttpGet()));
 			Header contentType = response.getFirstHeader("Content-Type");
-			
-			if (contentType != null && contentType.getValue().contains("application/json"))
+			int statusCode = response.getStatusLine().getStatusCode();
+			if ((statusCode >= 200 && statusCode < 300) && (contentType != null) && (contentType.getValue().contains("application/json")))
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				return new Gson().fromJson(entity, getClazz());
 			}
+			else if (statusCode >= 200 && statusCode < 300)
+				return null;
+			else 
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) 
 		{

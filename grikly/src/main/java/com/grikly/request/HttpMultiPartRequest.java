@@ -11,8 +11,11 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
-public final class HttpMultiPartRequest <E, T> extends HttpRequest<E, T> {
+import com.grikly.exception.GriklyException;
+
+public final class HttpMultiPartRequest <E, T> extends AbstractHttpRequest<E, T> {
 
 	protected HttpMultiPartRequest(HttpBuilder<E, T> builder) 
 	{
@@ -20,7 +23,7 @@ public final class HttpMultiPartRequest <E, T> extends HttpRequest<E, T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public T execute() 
+	public T execute() throws GriklyException 
 	{
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost();
@@ -35,6 +38,11 @@ public final class HttpMultiPartRequest <E, T> extends HttpRequest<E, T> {
 			post.setEntity(multipartEntity);
 			
 			response = client.execute(prepareRequestMethod(prepareRequestMethod(post)));
+			
+			//check if request was successful
+			if (response.getStatusLine().getStatusCode() > 299)
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
+			
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

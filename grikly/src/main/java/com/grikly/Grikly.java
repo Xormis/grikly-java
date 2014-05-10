@@ -2,40 +2,45 @@ package com.grikly;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import com.grikly.exception.NotFoundException;
+import com.grikly.exception.GriklyException;
+import com.grikly.model.AccessToken;
 import com.grikly.model.Card;
 import com.grikly.model.Connection;
 import com.grikly.model.Contact;
-import com.grikly.model.UserCredential;
 import com.grikly.model.NewUser;
-import com.grikly.model.SendCardModel;
 import com.grikly.model.User;
+import com.grikly.model.UserCredential;
 import com.grikly.model.UserInfo;
 import com.grikly.request.HttpBuilder;
 import com.grikly.request.Request;
 
+
 public class Grikly{
 
 	private final String apiKey;
-	private final AccessTokenManager accessTokenManager;
-	private UserCredential userCredential = new UserCredential();
-	
+	private AccessToken accessToken;
 	
 	/**
 	 * Grikly Default Constructor
 	 * @author Mario Dennis
 	 * @param apiKey user API Key
+	 * @param userCredential
+	 * @exception NullPointException for null ApiKey & UserCredential
 	 */
 	public Grikly (String apiKey)
 	{
+		if (apiKey == null)
+			throw new NullPointerException("Null ApiKey Supplied");
+		
 		this.apiKey = apiKey;
-		this.accessTokenManager = new AccessTokenManager(apiKey);
 	}//end constructor method
 	
 	
@@ -44,56 +49,50 @@ public class Grikly{
 	 * Gets API key.
 	 * @author Mario Dennis
 	 */
-	public String getApiKey ()
+	private String getApiKey ()
 	{
 		return apiKey;
 	}//end getApiKey method
-	
-	
-	
-	/**
-	 * Add the credentials of the user to make authenticated 
-	 * requests.
-	 * @author Mario Dennis
-	 * @param email
-	 * @param password
-	 */
-	public void addValidUserCredential (String email,String password)
-	{
-		userCredential.setEmail(email);
-		userCredential.setPassword(password);
-	}//end addValidUserCredential method
-	
-	
-	private UserCredential getUserCredential ()
-	{
-		return userCredential;
-	}//end getUserCredential method
-	
-	
-	/**
-	 * Fetch User Asynchronously.
-	 * @author Mario Dennis
-	 * @param userId
-	 * @param response
-	 */
-	public void fetchUser (int userId, ResponseListener<User> response) throws NotFoundException
-	{
-		if (userId <= 0)
-			throw new IllegalArgumentException("User id must be greater than zero");
-		
-		if (response == null)
-			throw new NullPointerException("Null Argument Supplied");
 
-		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
-		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential()));
-		
-		Request<Integer, User> request =  builder.buildHttpGet();
-		
-		GriklyClient<Integer, User> client = new GriklyClient<Integer, User>(request, response);
-		client.execute();
-	}//end fetchUser method
+	
+	/**
+	 * Get AccessToken
+	 * @author mario
+	 * @param userCredential
+	 * @return AccessToken
+	 * @throws GriklyException 
+	 */
+	public static AccessToken getAccessToken (String apiKey,UserCredential userCredential) throws GriklyException
+	{
+		//add parameters
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("grant_type", "password");
+		params.put("username", userCredential.getEmail());
+		params.put("password", userCredential.getPassword());
+
+		HttpBuilder<Void, AccessToken> builder = new HttpBuilder<Void, AccessToken>(AccessToken.class, apiKey);
+		builder.setPath("Token");
+		builder.addHttpParams(params);
+
+		Request<Void, AccessToken> request = builder.buildHttpPost();
+		return request.execute();
+	}//end getAccessToken method
+	
+	
+	/**
+	 * Set AccessToken
+	 * @param accessToken
+	 */
+	public void setAccessToken (AccessToken accessToken)
+	{
+		this.accessToken = accessToken;
+	}//end setAccessToken method
+	
+	
+	private AccessToken getAccessToken ()
+	{
+		return accessToken;
+	}//end getAccessToken method
 	
 	
 	/**
@@ -101,89 +100,73 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param userCredential
 	 * @return UserInfo
+	 * @throws GriklyException 
 	 */
-	public UserInfo getUserInfo (UserCredential userCredential)
+	public UserInfo getUserInfo (UserCredential userCredential) throws GriklyException
+	{	
+		if (userCredential == null)
+			throw new NullPointerException("Null UserCredential supplied");
+		
+		HttpBuilder<Void, UserInfo> builder = new HttpBuilder<Void, UserInfo>(UserInfo.class, getApiKey());
+		builder.setPath("v1/Account/UserInfo");
+		builder.setAccessToken(getAccessToken());
+		
+		Request<Void, UserInfo> request = builder.buildHttpGet();
+		return request.execute();
+	}//end getUserInfo method
+	
+	
+	
+	/**
+	 * 
+	 * @param userCredential
+	 * @param responseListener
+	 */
+	public void logoutUser (UserCredential userCredential, ResponseListener<Void> responseListener)
 	{
 		if (userCredential == null)
-			throw new NullPointerException("Null UserCredential instance supplied");
+			throw new NullPointerException("Null UserCredential supplied");
 		
-		HttpBuilder<Void, UserInfo> builder = new HttpBuilder<>(UserInfo.class, getApiKey());
-		builder.setPath("v1/Account/UserInfo");
-		builder.setAccessToken(accessTokenManager.getAccessToken(userCredential));
+		if (responseListener == null)
+			throw new NullPointerException("Null ResponseListener supplied");
 		
-
-		Request<Void, UserInfo> request = builder.buildHttpGet();
-		return request.execute();
-	}//end getUserInfo method
+		HttpBuilder<Void, Void> builder = new HttpBuilder<Void, Void>(Void.class, getApiKey());
+		builder.setPath("v1/Account/Logout");
+		builder.setAccessToken(getAccessToken());
 	
-	
-	/**
-	 * Gets UserInfo
-	 * @author Mario Dennis
-	 * @param userCredential
-	 * @return UserInfo
-	 */
-	public void fetchUserInfo (UserCredential userCredential,ResponseListener<UserInfo> responseListener)
-	{
-		if (userCredential == null || responseListener == null)
-			throw new NullPointerException("Null UserCredential instance supplied");
-		
-		HttpBuilder<Void, UserInfo> builder = new HttpBuilder<>(UserInfo.class, getApiKey());
-		builder.setPath("v1/Account/UserInfo");
-		builder.setAccessToken(accessTokenManager.getAccessToken(userCredential));
-		
-
-		Request<Void, UserInfo> request = builder.buildHttpGet();
-		GriklyClient<Void, UserInfo> client = new GriklyClient<>(request, responseListener);
+		Request<Void, Void>request = builder.buildHttpPost();
+		GriklyClient<Void, Void> client = new GriklyClient<Void, Void>(request, responseListener);
 		client.execute();
-	}//end getUserInfo method
+	}//end logoutUser method 
+	
 	
 	
 	
 	/**
-	 * Get User.
+	 * Get Contact
 	 * @author Mario Dennis
-	 * @param userId
-	 * @return User
+	 * @param contact
+	 * @throws GriklyException 
+	 * @exception NullPointException
 	 */
-	public User getUser (int userId) 
+	public Contact getContact (UserCredential userCredential, Contact contact) throws GriklyException
 	{
-		if (userId <= 0)
-			throw new IllegalArgumentException("User id must be greater than zero");
+		if (contact == null)
+			throw new NullPointerException("Null Contact supplied");
 		
-		HttpBuilder<Integer, User> builder = new HttpBuilder<Integer, User>(User.class, getApiKey());
-		builder.setPath(String.format("Users/%d", userId));
-		builder.setAccessToken(accessTokenManager.getAccessToken(getUserCredential()));
+		if (userCredential == null)
+			throw new NullPointerException("Null UserCredential supplied");
 		
-		Request<Integer, User> request = builder.buildHttpGet();
+		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
+		builder.setPath("v1/Contacts");
+		builder.setModel(contact);
+		builder.setAccessToken(getAccessToken());
+		
+		Request<Contact, Contact> request = builder.buildHttpPost();
 		return request.execute();
-	}//end getUser method 
+	}//end fetchContact method
 	
 	
-	
-	
-	/**
-	 * Fetch Card Asynchronously.
-	 * @author Mario Dennis
-	 * @param cardId
-	 * @param response
-	 */
-	public void fetchCard (int cardId,ResponseListener<Card> response)
-	{
-		if (cardId <= 0)
-			throw new IllegalArgumentException("User id must be greater than zero");
-		
-		if (response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
-		builder.setPath(String.format("Cards/%d", cardId));
-		
-		
-		Request<Integer, Card> request = builder.buildHttpGet();
-		GriklyClient<Integer, Card> client = new GriklyClient<Integer, Card>(request, response);
-		client.execute();
-	}//end emailExist method
 	
 	
 	/**
@@ -191,76 +174,22 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param cardId
 	 * @return Card
+	 * @throws GriklyException 
 	 */
-	public Card getCard (int cardId)
+	public Card getCard (int cardId) throws GriklyException
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Card Id must be greater than zero");
 		
 		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Cards/%d", cardId));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Integer, Card> request = builder.buildHttpGet();
 		return request.execute();
 	}//end getCard method
 	
-		
-	/**
-	 * Check if email exists Asynchronously.
-	 * @author Mario Dennis
-	 */
-	public void emailExist (String email, ResponseListener<Boolean> response)
-	{
-		if (email == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean>(Boolean.class,getApiKey())
-													.setPath(String.format("Account/EmailExist?Email=%s", email));
-		
-		Request<String, Boolean> request = builder.buildHttpGet();
-		GriklyClient<String, Boolean> client = new GriklyClient<String, Boolean>(request, response);
-		client.execute();
-	}//end emailExist method
 	
-	
-	/**
-	 *  Check if email exists 
-	 * @author Mario Dennis
-	 * @return Boolean
-	 */
-	public boolean emailExist (String email)
-	{
-		if (email == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-
-		HttpBuilder<String, Boolean> builder = new HttpBuilder<String, Boolean> (Boolean.class,getApiKey());
-		builder.setPath(String.format("Account/EmailExist?Email=%s", email));
-		
-		Request<String, Boolean> request = builder.buildHttpGet();
-		return request.execute();
-	}//end isEmailExist method
-	
-	
-	
-	/**
-	 * Create Card Asynchronously.
-	 * @param card
-	 * @param response
-	 */
-	public void createCard (Card card,ResponseListener<Card> response)
-	{
-		if (card == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
-		builder.setModel(card);
-		builder.setPath("Cards");
-			
-		Request<Card, Card> request = builder.buildHttpPost();
-		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response);
-		client.execute();
-	}//end createCard method
 	
 	
 	/**
@@ -269,124 +198,42 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param card
 	 * @return
+	 * @throws GriklyException 
 	 */
-	public Card createCard (Card card)
+	public Card createCard (Card card) throws GriklyException
 	{
 		if (card == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setModel(card);
-		builder.setPath("Cards");
+		builder.setPath("v1/Cards");
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Card, Card> request = builder.buildHttpPost();
 		return request.execute();
 	}//end createCard method
 	
 	
-	
-	/**
-	 * Delete Card Asynchronously.
-	 * @author Mario Dennis
-	 * @param cardId
-	 * @param response
-	 */
-	public void deleteCard (int cardId, ResponseListener<String> response)
-	{
-		if (cardId <= 0)
-			throw new IllegalArgumentException("Card Id must be greater than 0");
-		
-		if (response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<Card, String> builder  = new HttpBuilder<Card, String>(String.class, getApiKey());
-		builder.setPath(String.format("Cards/%d", cardId));
-		
-		Request<Card, String> request = builder.buildHttpDelete();
-		GriklyClient<Card,String> client = new GriklyClient<Card,String>(request, response);
-		client.execute();
-	}//end deleteCard method 
-	
-	
 	/**
 	 * Delete Card. This method requires user credentials to 
 	 * authorize action.
 	 * @param cardId
+	 * @throws GriklyException 
 	 */
-	public String deleteCard (int cardId)
+	public String deleteCard (int cardId) throws GriklyException
 	{
 		if (cardId <= 0)
 			throw new IllegalArgumentException("Card Id must be greater than 0");
 		
 		HttpBuilder<Card, String> builder = new HttpBuilder<Card, String>(String.class, getApiKey());
-		builder.setPath(String.format("Cards/%d", cardId));
+		builder.setPath(String.format("v1/Cards/%d", cardId));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Card, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteCard method
 	
-	
-	/**
-	 * Get a valid User by Email and Password Asynchronously..
-	 * @author Mario Dennis
-	 * @param model
-	 * @param response
-	 */
-	public void fetchValidUser (UserCredential model,ResponseListener<User> response)
-	{
-		if (model == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<UserCredential, User> builder = new HttpBuilder<UserCredential, User>(User.class, getApiKey());
-		builder.setModel(model);
-		builder.setPath("Account/Login");
-		
-		Request<UserCredential, User> request = builder.buildHttpPost();
-		GriklyClient<UserCredential, User> client = new GriklyClient<UserCredential, User>(request, response);
-		client.execute();
-	}//end fetchValidUser method
-	
-	
-	/**
-	 * Get a valid User by Email and Password ..
-	 * @author Mario Dennis
-	 * @param model
-	 * @param response
-	 */
-	public User getValidUser (UserCredential model)
-	{
-		if (model == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<UserCredential, User> builder = new HttpBuilder<UserCredential, User>(User.class, getApiKey());
-		builder.setModel(model);
-		builder.setPath("Account/Login");
-		
-		Request<UserCredential, User> request = builder.buildHttpPost();
-		return request.execute();
-	}//end getValidUser method
-	
-	
-	
-	
-	/**
-	 * Registers new User Asynchronously..
-	 * @param newUser 
-	 * @param response
-	 */
-	public void register (NewUser newUser,ResponseListener<User> response)
-	{
-		if (newUser == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<NewUser, User> builder = new HttpBuilder<NewUser, User> (User.class,getApiKey());
-		builder.setModel(newUser);
-		builder.setPath("Account/Register");
-		
-		Request<NewUser, User> request = builder.buildHttpPost();
-		GriklyClient<NewUser, User> client = new GriklyClient<NewUser, User>(request, response);
-		client.execute();
-	}//end register method
 	
 
 	/**
@@ -394,15 +241,17 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param newUser
 	 * @return User
+	 * @throws GriklyException 
 	 */
-	public User register (NewUser newUser) 
+	public User register (NewUser newUser) throws GriklyException 
 	{
 		if (newUser == null)
 			throw new NullPointerException("Null Argument Supplied");
 		
 		HttpBuilder<NewUser, User> builder = new HttpBuilder<NewUser, User>(User.class, getApiKey());
 		builder.setModel(newUser);
-		builder.setPath("Account/Register");
+		builder.setPath("v1/Account/Register");
+		builder.setAccessToken(getAccessToken());
 		
 		Request<NewUser, User> request = builder.buildHttpPost();
 		return request.execute();
@@ -410,34 +259,15 @@ public class Grikly{
 	
 	
 	
-	/**
-	 * Update card Asynchronously.
-	 * @author Mario Dennis
-	 * @param card
-	 * @param response
-	 */
-	public void updateCard (Card card,ResponseListener<Card> response)
-	{
-		if (card == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
-		builder.setModel(card);
-		builder.setPath(String.format("Cards/%d", card.getCardId()));
-		
-		Request<Card, Card> request = builder.buildHttpPut();
-		GriklyClient<Card, Card> client = new GriklyClient<Card, Card>(request, response);
-		client.execute();
-	}//end updateCard method 
-	
 	
 	/**
 	 * Update card Asynchronously.
 	 * @author Mario Dennis
 	 * @param card
 	 * @param response
+	 * @throws GriklyException 
 	 */
-	public Card updateCard (Card card)
+	public Card updateCard (Card card) throws GriklyException
 	{
 		if (card == null)
 			throw new NullPointerException("Null Argument Supplied");
@@ -445,6 +275,7 @@ public class Grikly{
 		HttpBuilder<Card,Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setModel(card);
 		builder.setPath(String.format("Card/%d", card.getCardId()));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Card, Card> request = builder.buildHttpPut();
 		return request.execute();
@@ -458,68 +289,21 @@ public class Grikly{
 	 * @param userId
 	 * @param cardId
 	 * @param response
+	 * @throws GriklyException 
 	 */
-	public void  updateUserDefaultCard (int userId,int cardId,ResponseListener<Card> response)
-	{
-		if (userId <= 0 || cardId <= 0)
-			throw new IllegalArgumentException("Id must be greater than zero");
-		
-		if (response == null)
-			throw new NullPointerException("Null ResponseListener instance supplied");
-	
-		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
-		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
-		
-		Request<Card, Card> request = builder.buildHttpPost();
-		GriklyClient<Card, Card> client = new GriklyClient<Card, Card> (request,response);
-		client.execute();
-	}//end setUserDefaultCard method
-	
-	
-	/**
-	 * Sets a Default card for User
-	 * @author Mario Dennis
-	 * @param userId
-	 * @param cardId
-	 * @param response
-	 */
-	public void updateUserDefaultCard(int userId,int cardId) 
+	public void updateUserDefaultCard(int userId,int cardId) throws GriklyException 
 	{
 		if (userId <= 0 || cardId <= 0)
 			throw new IllegalArgumentException("Id must be greater than zero");
 		
 		HttpBuilder<Card, Card> builder = new HttpBuilder<Card, Card>(Card.class, getApiKey());
 		builder.setPath(String.format("Users/%d/DefaultCard?cardId=%d", userId,cardId));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Card, Card> request = builder.buildHttpPost();
 		request.execute();
 	}//end setUserDefaultCard method
 	
-	
-	
-	/**
-	 * Send Card Asynchronously.
-	 * @author Mario Dennis
-	 * @param cardId
-	 * @param model
-	 * @param response
-	 */
-	public void sendCard (int cardId,SendCardModel model,ResponseListener<Card> response) 
-	{
-		if (cardId <= 0)
-			throw new IllegalArgumentException("Id must be greater than 0");
-		
-		if ( model == null || response == null)
-			throw new NullPointerException("Null Argument Supplied");
-		
-		HttpBuilder<SendCardModel, Card> builder = new HttpBuilder<SendCardModel, Card>(Card.class, getApiKey());
-		builder.setModel(model);
-		builder.setPath(String.format("Cards/%d/",cardId));
-		
-		Request<SendCardModel, Card> request = builder.buildHttpPost();
-		GriklyClient<SendCardModel, Card> client = new GriklyClient<SendCardModel, Card>(request, response);
-		client.execute();
-	}//end sendCard method
 	
 	
 	
@@ -529,56 +313,17 @@ public class Grikly{
 	 * @param searchString
 	 * @param page
 	 * @return List<Contact>
+	 * @throws GriklyException 
 	 */
-	public List<Connection> getConnection ()
+	public List<Connection> getConnection () throws GriklyException
 	{
 		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
 		builder.setPath("Contacts/All");
+		builder.setAccessToken(getAccessToken());
 		
 		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
 		return request.execute();
 	}//end getContact method
-	
-	
-	/**
-	 * Get Connection
-	 * @author Mario Dennis
-	 * @param searchString
-	 * @param page
-	 */
-	public void getConnection(ResponseListener<ArrayList<Connection>> response)
-	{
-		HttpBuilder<String, ArrayList<Connection>> builder = new HttpBuilder<String, ArrayList<Connection>>(null, getApiKey());
-		builder.setPath("Contacts/All");
-		
-		Request<String, ArrayList<Connection>> request = builder.buildHttpContactRequest();
-	
-		GriklyClient<String, ArrayList<Connection>> client = new GriklyClient<String, ArrayList<Connection>>(request, response);
-		client.execute();
-	}//end getContact method
-	
-	
-	
-	
-	/**
-	 * Create Contact Asynchronously.
-	 * @author Mario Dennis
-	 * @param contact
-	 * @return Contact
-	 */
-	public void createContact(Contact contact,ResponseListener<Contact> response)
-	{
-		if (contact == null)
-			throw new NullPointerException("Null argument supplied");
-		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
-		builder.setPath("Contacts");
-		builder.setModel(contact);
-		
-		Request<Contact, Contact> request = builder.buildHttpPost();
-		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
-		client.execute();
-	}//end createContact method 
 	
 	
 	
@@ -587,8 +332,9 @@ public class Grikly{
 	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
+	 * @throws GriklyException 
 	 */
-	public Contact createContact(Contact contact) 
+	public Contact createContact(Contact contact) throws GriklyException 
 	{
 		if (contact == null || contact == null)
 			throw new NullPointerException("Null argument supplied");
@@ -596,6 +342,7 @@ public class Grikly{
 		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey()); 
 		builder.setPath("Contacts");
 		builder.setModel(contact);
+		builder.setAccessToken(getAccessToken());
 
 		Request<Contact, Contact> request = builder.buildHttpPost();
 		return request.execute();
@@ -603,34 +350,14 @@ public class Grikly{
 	
 	
 	/**
-	 * Update Contact Asynchronously.
-	 * @author Mario Dennis
-	 * @param contact
-	 * @return Contact
-	 */
-	public void updateContact (Contact contact,ResponseListener<Contact> response)
-	{
-		if (contact == null)
-			throw new NullPointerException("Null argument supplied");
-		
-		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
-		builder.setModel(contact);
-		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
-		
-		Request<Contact, Contact> request = builder.buildHttpPut();
-		GriklyClient<Contact, Contact> client = new GriklyClient<Contact, Contact>(request, response);
-		client.execute();
-	}//end updateContact method
-	
-	
-	/**
 	 * Update Contact.
 	 * @author Mario Dennis
 	 * @param contact
 	 * @return Contact
+	 * @throws GriklyException 
 	 * @throws NotFoundException 
 	 */
-	public Contact updateContact (Contact contact) 
+	public Contact updateContact (Contact contact) throws GriklyException 
 	{
 		if (contact == null)
 			throw new NullPointerException("Null argument supplied");
@@ -638,6 +365,7 @@ public class Grikly{
 		HttpBuilder<Contact, Contact> builder = new HttpBuilder<Contact, Contact>(Contact.class, getApiKey());
 		builder.setModel(contact);
 		builder.setPath(String.format("Contacts/%d", contact.getCardId()));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Contact, Contact> request = builder.buildHttpPut();
 		return request.execute();
@@ -647,27 +375,21 @@ public class Grikly{
 	/**
 	 * Uploads user profile image.
 	 * @author Mario Dennis
-	 * @param userId
 	 * @param file
+	 * @see v1/Account/Register
+	 * @throws GriklyException 
 	 */
-	public void uploadProfileImage (int userId,File file,ResponseListener<String> response) 
+	public void uploadProfileImage (File file) throws GriklyException 
 	{
-		if (userId <= 0)
-			throw new IllegalArgumentException("User Id must be greater than 0");
-		
 		if (file == null)
 			throw new NullPointerException("Null File Argument Supplied");
 		
-		if (response == null)
-			throw new NullPointerException("Null ResponseListener Argument supplied");
-		
 		HttpBuilder<File,String> builder = new HttpBuilder<File, String>(String.class, getApiKey());
-		builder.setPath(String.format("Users/%d/ProfileImage", userId));
+		builder.setPath("v1/Account/ProfileImage");
+		builder.setAccessToken(getAccessToken());
 		
 		Request<File, String> request = builder.buildHttpMultiPartRequest(file);
-		GriklyClient<File, String> client = new GriklyClient<File, String>(request, response);
-		
-		client.execute();
+		request.execute();
 	}//end uploadProfileImage method
 	
 	
@@ -675,41 +397,22 @@ public class Grikly{
 	 * Delete card
 	 * @param contactId
 	 * @return 
+	 * @throws GriklyException 
 	 */
-	public String deleteContact (int contactId) 
+	public String deleteContact (int contactId) throws GriklyException 
 	{
 		if (contactId <= 0)
 			throw new IllegalArgumentException("contactId must be greater that zero");
 		
 		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
 		builder.setPath(String.format("Contacts/%d", contactId));
+		builder.setAccessToken(getAccessToken());
 		
 		Request<Contact, String> request = builder.buildHttpDelete();
 		return request.execute();
 	}//end deleteContact method
 	
 	
-	/**
-	 * Delete card
-	 * @param contactId
-	 * @return
-	 */
-	public void deleteContact (int contactId,ResponseListener<String> response) 
-	{
-		if (contactId <= 0)
-			throw new IllegalArgumentException("contactId must be greater that zero");
-		
-		if (response == null)
-			throw new NullPointerException("Null ResponseListener supplied");
-		
-		
-		HttpBuilder<Contact, String> builder = new HttpBuilder<Contact, String>(String.class, getApiKey());
-		builder.setPath(String.format("Contacts/%d", contactId));
-		
-		Request<Contact, String> request = builder.buildHttpDelete();
-		GriklyClient<Contact, String> client = new GriklyClient<Contact, String>(request, response);
-		client.execute();
-	}//end deleteContact method
 	
 	
 	/**

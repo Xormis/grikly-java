@@ -1,5 +1,7 @@
 package com.grikly.request;
 
+import com.grikly.exception.GriklyException;
+
 
 /**
  * Request Interface that all request class
@@ -16,6 +18,6 @@ public interface Request<E,T>{
 	 * @param url
 	 * @return
 	 */
-	public T execute();
+	public T execute() throws GriklyException;
 	
 }//end Request interface

@@ -7,6 +7,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import com.grikly.exception.GriklyException;
 
 
 /**
@@ -18,7 +21,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * @param <E>
  * @param <T>
  */
-public final class HttpDeleteRequest <E,T> extends HttpRequest<E, String> {
+public final class HttpDeleteRequest <E,T> extends AbstractHttpRequest<E, String> {
 
 
 	/**
@@ -37,13 +40,17 @@ public final class HttpDeleteRequest <E,T> extends HttpRequest<E, String> {
 	 * @author Mario Dennis
 	 * @return T
 	 */
-	public String execute()
+	public String execute() throws GriklyException
 	{
 		HttpClient client = new DefaultHttpClient ();
 		HttpResponse response = null;
 		try 
 		{
 			response = client.execute(prepareRequestMethod(new HttpPut()));
+			
+			//check if request was successful
+			if (response.getStatusLine().getStatusCode() > 299)
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));
 		} 
 		catch (ClientProtocolException e) {
 			e.printStackTrace();
