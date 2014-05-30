@@ -7,7 +7,28 @@ public class NewUser{
 	 private String Email;
 	 private String Password;
 	 
+	 //Default Constructor
+	 public NewUser(){}
 	 
+	
+	/**
+	 * Constructor
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+	 * @param password
+	 */
+	public NewUser(String firstName, String lastName, String email,String password)
+	{
+		super();
+		FirstName = firstName;
+		LastName = lastName;
+		Email = email;
+		Password = password;
+	}
+
+
+
 	/**
 	 * @return the firstName
 	 */

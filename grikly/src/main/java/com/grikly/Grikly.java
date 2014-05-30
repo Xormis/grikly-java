@@ -116,27 +116,24 @@ public class Grikly{
 	}//end getUserInfo method
 	
 	
-	
 	/**
-	 * 
+	 * Logs user out
 	 * @param userCredential
-	 * @param responseListener
+	 * @throws GriklyException
 	 */
-	public void logoutUser (UserCredential userCredential, ResponseListener<Void> responseListener)
+	public void logoutUser (UserCredential userCredential) throws GriklyException
 	{
 		if (userCredential == null)
 			throw new NullPointerException("Null UserCredential supplied");
 		
-		if (responseListener == null)
-			throw new NullPointerException("Null ResponseListener supplied");
+
 		
 		HttpBuilder<Void, Void> builder = new HttpBuilder<Void, Void>(Void.class, getApiKey());
 		builder.setPath("v1/Account/Logout");
 		builder.setAccessToken(getAccessToken());
 	
-		Request<Void, Void>request = builder.buildHttpPost();
-		GriklyClient<Void, Void> client = new GriklyClient<Void, Void>(request, responseListener);
-		client.execute();
+		Request<Void, Void> request = builder.buildHttpPost();
+		request.execute();
 	}//end logoutUser method 
 	
 	
@@ -182,7 +179,7 @@ public class Grikly{
 			throw new IllegalArgumentException("Card Id must be greater than zero");
 		
 		HttpBuilder<Integer, Card> builder = new HttpBuilder<Integer, Card>(Card.class, getApiKey());
-		builder.setPath(String.format("Cards/%d", cardId));
+		builder.setPath(String.format("v1/Cards/%d", cardId));
 		builder.setAccessToken(getAccessToken());
 		
 		Request<Integer, Card> request = builder.buildHttpGet();
@@ -197,7 +194,7 @@ public class Grikly{
 	 * authorize action.
 	 * @author Mario Dennis
 	 * @param card
-	 * @return
+	 * @return Card
 	 * @throws GriklyException 
 	 */
 	public Card createCard (Card card) throws GriklyException

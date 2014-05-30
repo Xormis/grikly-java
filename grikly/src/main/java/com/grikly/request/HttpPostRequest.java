@@ -64,7 +64,7 @@ public final class HttpPostRequest <E,T> extends AbstractHttpRequest<E, T>{
 			Header contentType = response.getFirstHeader("Content-Type");
 			int statusCode = response.getStatusLine().getStatusCode();
 			
-			if ((statusCode >= 200 && statusCode < 300) &&(contentType != null && contentType.getValue().contains("application/json")))
+			if ((statusCode >= 200 && statusCode < 300) && (contentType != null && contentType.getValue().contains("application/json")))
 			{
 				String entity = EntityUtils.toString(response.getEntity());
 				return new Gson().fromJson(entity, getClazz());
@@ -72,7 +72,7 @@ public final class HttpPostRequest <E,T> extends AbstractHttpRequest<E, T>{
 			else if (statusCode >= 200 && statusCode < 300)
 				return null;
 			else
-				throw new GriklyException(EntityUtils.toString(response.getEntity()));
+				throw new GriklyException(EntityUtils.toString(response.getEntity()));//throws exception when fail
 		} 
 		catch (ClientProtocolException e) {
 			e.printStackTrace();
