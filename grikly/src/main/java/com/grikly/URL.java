@@ -2,7 +2,9 @@ package com.grikly;
 
 public enum URL {
 
-	BASE ("http://griklyapibeta.azurewebsites.net/%s");
+	//BASE ("http://griklyapibeta.azurewebsites.net/%s");
+	BASE("http://apigrikly.azurewebsites.net/%s");
+	
 	private final String url;
 	
 	private URL(String url)
